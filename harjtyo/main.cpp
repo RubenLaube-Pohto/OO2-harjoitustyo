@@ -1,4 +1,7 @@
+#include <vector>
 #include <SFML/Graphics.hpp>
+#include "playerCharacter.h"
+#include "math.h"
 
 const float MOVE_SPEED = 0.5f;
 const int WIDTH = 600;
@@ -10,7 +13,7 @@ int main() {
 	bg.setSize(sf::Vector2f(1000.0f, 1000.0f));
 	bg.setFillColor(sf::Color::Blue);
 
-	sf::RectangleShape player = sf::RectangleShape::RectangleShape();
+	PlayerCharacter player = PlayerCharacter();
 	player.setSize(sf::Vector2f(50.0f, 50.0f));
 	player.setOrigin(50.0f/2, 50.0f/2);
 	player.setPosition(1000.0f/2, 1000.0f/2);
@@ -26,6 +29,8 @@ int main() {
 	float xSpeed = 0.0f;
 	float ySpeed = 0.0f;
 	sf::Vector2i mousePosition;
+
+	std::vector<Bullet> bullets;
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -52,6 +57,10 @@ int main() {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
 			xSpeed = MOVE_SPEED;
 		}
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			sf::Vector2f bv = crossHair.getPosition() - player.getPosition();
+			bullets.push_back(Bullet(Math::vector2fUnit(bv), player.getPosition(), Math::vector2fLength(bv)));
+		}
 
 		player.move(xSpeed, ySpeed);
 		view.move(xSpeed, ySpeed);
@@ -65,6 +74,15 @@ int main() {
 		window.draw(bg);
 		window.draw(player);
 		window.draw(crossHair);
+		for (int i = 0; i < bullets.size(); i++) {
+			bullets.at(i).travel();
+			if (bullets.at(i).isAlive()) {
+				window.draw(bullets.at(i));
+			}
+			else {
+				bullets.erase(bullets.begin() + i);
+			}
+		}
 		window.display();
 	}
 
