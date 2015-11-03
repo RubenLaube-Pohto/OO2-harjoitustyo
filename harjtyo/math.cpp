@@ -9,4 +9,9 @@ namespace Math {
 		float l = vector2fLength(v);
 		return sf::Vector2f(v.x / l, v.y / l);
 	}
+	sf::Vector2f vector2fRotate(const sf::Vector2f& v, float angle) {
+		float x = v.x * cos(angle) - v.y * sin(angle);
+		float y = v.x * sin(angle) + v.y * cos(angle);
+		return sf::Vector2f(x, y);
+	}
 }

@@ -8,6 +8,9 @@ const int WIDTH = 600;
 const int HEIGTH = WIDTH;
 
 int main() {
+	sf::Clock clock;
+	float cooldown = 0.1f;
+
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGTH), "Harkkarainen");
 	sf::RectangleShape bg = sf::RectangleShape::RectangleShape();
 	bg.setSize(sf::Vector2f(1000.0f, 1000.0f));
@@ -58,16 +61,19 @@ int main() {
 			xSpeed = MOVE_SPEED;
 		}
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-			sf::Vector2f bv = crossHair.getPosition() - player.getPosition();
-			bullets.push_back(Bullet(Math::vector2fUnit(bv), player.getPosition(), Math::vector2fLength(bv)));
+			if (cooldown <= clock.getElapsedTime().asSeconds()) {
+				clock.restart();
+				sf::Vector2f bv = crossHair.getPosition() - player.getPosition();
+				bullets.push_back(Bullet(Math::vector2fUnit(bv), player.getPosition(), Math::vector2fLength(bv)));
+			}
 		}
 
 		player.move(xSpeed, ySpeed);
 		view.move(xSpeed, ySpeed);
 		mousePosition = sf::Mouse::getPosition(window);
 		crossHair.setPosition(player.getPosition() + sf::Vector2f(mousePosition) - sf::Vector2f(WIDTH / 2.0f, HEIGTH / 2.0f));
-		xSpeed = 0;
-		ySpeed = 0;
+		xSpeed = 0.0f;
+		ySpeed = 0.0f;
 
 		window.clear();
 		window.setView(view);
