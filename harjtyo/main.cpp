@@ -117,7 +117,10 @@ void update(sf::RenderWindow& window) {
 		player.move(0, ySpeed);
 	}
 
-	view.setCenter(player.getPosition());
+
+	// TODO: make view stop moving on edges
+	playerPos = player.getPosition();
+	view.setCenter(playerPos);
 
 	sf::Vector2i mousePosition;
 	mousePosition = sf::Mouse::getPosition(window);
@@ -132,7 +135,7 @@ void update(sf::RenderWindow& window) {
 		}
 	}
 
-	framerateText.setPosition(player.getPosition() + sf::Vector2f(-WIDTH * 0.5f + 20.0f, -HEIGTH * 0.5f + 20.0f));
+	framerateText.setPosition(view.getCenter() + sf::Vector2f(-WIDTH * 0.5f + 20.0f, -HEIGTH * 0.5f + 20.0f));
 	if (fpsTimer.getElapsedTime().asSeconds() <= 1.0f) {
 		fps++;
 	}

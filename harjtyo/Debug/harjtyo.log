@@ -1,4 +1,4 @@
-﻿Build started 4.11.2015 17:26:16.
+﻿Build started 4.11.2015 17:59:36.
      1>Project "E:\Documents\GitHub\OO2\harjtyo\harjtyo\harjtyo.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /I"E:\Documents\GitHub\OO2\harjtyo\SFML-2.3.2\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
@@ -15,4 +15,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.73
+Time Elapsed 00:00:02.90
