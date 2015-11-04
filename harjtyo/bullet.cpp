@@ -1,5 +1,4 @@
 #include "bullet.h"
-#include <cstdlib>
 #include <time.h>
 #include "math.h"
 
@@ -8,8 +7,7 @@ Bullet::Bullet() : CircleShape () {
 }
 
 Bullet::Bullet(const sf::Vector2f& direction, const sf::Vector2f& origin, float distance) : CircleShape() {
-	srand(time(NULL));
-	this->speed = 5.0f;
+	this->speed = 10.0f;
 	this->setRadius(4.0f);
 	this->setOrigin(2.0f, 2.0f);
 	this->setPosition(origin);
