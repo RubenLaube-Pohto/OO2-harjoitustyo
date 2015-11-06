@@ -64,17 +64,36 @@ int main() {
 			}
 		}
 
-		// TODO: Add realistic diagonal movement
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) &&
+			sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
+			xSpeed = -MOVE_SPEED * cos(Math::PI * 0.25f);
+			ySpeed = -MOVE_SPEED * sin(Math::PI * 0.25f);
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) &&
+			     sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+			xSpeed = MOVE_SPEED * cos(Math::PI * 0.25f);
+			ySpeed = -MOVE_SPEED * sin(Math::PI * 0.25f);
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) &&
+			     sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
+			xSpeed = -MOVE_SPEED * cos(Math::PI * 0.25f);
+			ySpeed = MOVE_SPEED * sin(Math::PI * 0.25f);
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) &&
+			     sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+			xSpeed = MOVE_SPEED * cos(Math::PI * 0.25f);
+			ySpeed = MOVE_SPEED * sin(Math::PI * 0.25f);
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
 			ySpeed = -MOVE_SPEED;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
 			xSpeed = -MOVE_SPEED;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
 			ySpeed = MOVE_SPEED;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
 			xSpeed = MOVE_SPEED;
 		}
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
@@ -108,13 +127,20 @@ void update(sf::RenderWindow& window) {
 	sf::Vector2f playerPos = player.getPosition();
 	sf::Vector2f playerSize = player.getSize();
 
-	if ((playerPos.x - playerSize.x / 2 + xSpeed) >= 0.0f && 
-		(playerPos.x + playerSize.x / 2 + xSpeed) <= 1000.0f) {
-		player.move(xSpeed, 0);
+	if ((playerPos.x - playerSize.x * 0.5f + xSpeed) < 0.0f && ySpeed == 0) {
+		player.setPosition(playerSize.x * 0.5f, playerPos.y);
 	}
-	if ((playerPos.y - playerSize.y / 2 + ySpeed) >= 0.0f && 
-		(playerPos.y + playerSize.y / 2 + ySpeed) <= 1000.0f) {
-		player.move(0, ySpeed);
+	else if ((playerPos.x + playerSize.x * 0.5f + xSpeed) > 1000.0f && ySpeed == 0) {
+		player.setPosition(1000.0f - playerSize.x * 0.5f, playerPos.y);
+	}
+	else if (playerPos.y - playerSize.y * 0.5f + ySpeed < 0.0f && xSpeed == 0) {
+		player.setPosition(playerPos.x, playerSize.y * 0.5f);
+	}
+	else if (playerPos.y + playerSize.y * 0.5f + ySpeed > 1000.0f && xSpeed == 0) {
+		player.setPosition(playerPos.x, 1000.0f - playerSize.y * 0.5f);
+	}
+	else {
+		player.move(xSpeed, ySpeed);
 	}
 
 
