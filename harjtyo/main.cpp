@@ -6,6 +6,8 @@
 const float MOVE_SPEED = 5.0f;
 const int WIDTH = 600;
 const int HEIGTH = WIDTH;
+const float GROUND_WIDTH = 1000.0f;
+const float GROUND_HEIGTH = GROUND_WIDTH;
 
 PlayerCharacter player;
 sf::View view;
@@ -33,21 +35,21 @@ int main() {
 	window.setFramerateLimit(60);
 
 	sf::RectangleShape background = sf::RectangleShape::RectangleShape();
-	background.setSize(sf::Vector2f(1000.0f, 1000.0f));
+	background.setSize(sf::Vector2f(GROUND_WIDTH, GROUND_HEIGTH));
 	background.setFillColor(sf::Color::Blue);
 
 	player = PlayerCharacter();
 	player.setSize(sf::Vector2f(50.0f, 50.0f));
 	player.setOrigin(50.0f/2, 50.0f/2);
-	player.setPosition(1000.0f/2, 1000.0f/2);
+	player.setPosition(GROUND_WIDTH/2, GROUND_HEIGTH/2);
 	player.setFillColor(sf::Color::Yellow);
 
 	crossHair = sf::CircleShape::CircleShape();
 	crossHair.setRadius(5.0f);
 	crossHair.setOrigin(5.0f, 5.0f);
-	crossHair.setPosition(1000.0f / 2, 1000.0f / 2);
+	crossHair.setPosition(GROUND_WIDTH / 2, GROUND_HEIGTH / 2);
 
-	view = sf::View(sf::Vector2f(500.0f, 500.0f), sf::Vector2f(WIDTH, HEIGTH));
+	view = sf::View(player.getPosition(), sf::Vector2f(WIDTH, HEIGTH));
 
 	xSpeed = 0.0f;
 	ySpeed = 0.0f;
@@ -127,21 +129,36 @@ void update(sf::RenderWindow& window) {
 	sf::Vector2f playerPos = player.getPosition();
 	sf::Vector2f playerSize = player.getSize();
 
-	if ((playerPos.x - playerSize.x * 0.5f + xSpeed) < 0.0f && ySpeed == 0) {
+	bool crossLeft = (playerPos.x - playerSize.x * 0.5f + xSpeed) < 0.0f;
+	bool crossRight = (playerPos.x + playerSize.x * 0.5f + xSpeed) > 1000.0f;
+	bool crossTop = (playerPos.y - playerSize.y * 0.5f + ySpeed) < 0.0f;
+	bool crossBottom = (playerPos.y + playerSize.y * 0.5f + ySpeed) > 1000.0f;
+	if (crossTop && crossLeft)
+		player.setPosition(playerSize.x * 0.5f, playerSize.y * 0.5f);
+	else if (crossTop && crossRight)
+		player.setPosition(1000.0f - playerSize.x * 0.5f, playerSize.y * 0.5f);
+	else if (crossBottom && crossLeft)
+		player.setPosition(playerSize.x * 0.5f, 1000.0f - playerSize.y * 0.5f);
+	else if (crossBottom && crossRight)
+		player.setPosition(1000.0f - playerSize.x * 0.5f, 1000.0f - playerSize.y * 0.5f);
+	else if (crossLeft) {
 		player.setPosition(playerSize.x * 0.5f, playerPos.y);
+		player.move(0.0f, ySpeed);
 	}
-	else if ((playerPos.x + playerSize.x * 0.5f + xSpeed) > 1000.0f && ySpeed == 0) {
+	else if (crossRight) {
 		player.setPosition(1000.0f - playerSize.x * 0.5f, playerPos.y);
+		player.move(0.0f, ySpeed);
 	}
-	else if (playerPos.y - playerSize.y * 0.5f + ySpeed < 0.0f && xSpeed == 0) {
+	else if (crossTop) {
 		player.setPosition(playerPos.x, playerSize.y * 0.5f);
+		player.move(xSpeed, 0.0f);
 	}
-	else if (playerPos.y + playerSize.y * 0.5f + ySpeed > 1000.0f && xSpeed == 0) {
+	else if (crossBottom) {
 		player.setPosition(playerPos.x, 1000.0f - playerSize.y * 0.5f);
+		player.move(xSpeed, 0.0f);
 	}
-	else {
+	else
 		player.move(xSpeed, ySpeed);
-	}
 
 
 	// TODO: make view stop moving on edges
