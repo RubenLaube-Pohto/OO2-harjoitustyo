@@ -6,8 +6,8 @@
 const float MOVE_SPEED = 5.0f;
 const int WIDTH = 600;
 const int HEIGTH = WIDTH;
-const float GROUND_WIDTH = 1000.0f;
-const float GROUND_HEIGTH = GROUND_WIDTH;
+const float GROUND_WIDTH = 700.0f;
+const float GROUND_HEIGTH = 700.0f;
 
 PlayerCharacter player;
 sf::View view;
@@ -130,23 +130,23 @@ void update(sf::RenderWindow& window) {
 	sf::Vector2f playerSize = player.getSize();
 
 	bool crossLeft = (playerPos.x - playerSize.x * 0.5f + xSpeed) < 0.0f;
-	bool crossRight = (playerPos.x + playerSize.x * 0.5f + xSpeed) > 1000.0f;
+	bool crossRight = (playerPos.x + playerSize.x * 0.5f + xSpeed) > GROUND_WIDTH;
 	bool crossTop = (playerPos.y - playerSize.y * 0.5f + ySpeed) < 0.0f;
-	bool crossBottom = (playerPos.y + playerSize.y * 0.5f + ySpeed) > 1000.0f;
+	bool crossBottom = (playerPos.y + playerSize.y * 0.5f + ySpeed) > GROUND_HEIGTH;
 	if (crossTop && crossLeft)
 		player.setPosition(playerSize.x * 0.5f, playerSize.y * 0.5f);
 	else if (crossTop && crossRight)
-		player.setPosition(1000.0f - playerSize.x * 0.5f, playerSize.y * 0.5f);
+		player.setPosition(GROUND_WIDTH - playerSize.x * 0.5f, playerSize.y * 0.5f);
 	else if (crossBottom && crossLeft)
-		player.setPosition(playerSize.x * 0.5f, 1000.0f - playerSize.y * 0.5f);
+		player.setPosition(playerSize.x * 0.5f, GROUND_HEIGTH - playerSize.y * 0.5f);
 	else if (crossBottom && crossRight)
-		player.setPosition(1000.0f - playerSize.x * 0.5f, 1000.0f - playerSize.y * 0.5f);
+		player.setPosition(GROUND_WIDTH - playerSize.x * 0.5f, GROUND_HEIGTH - playerSize.y * 0.5f);
 	else if (crossLeft) {
 		player.setPosition(playerSize.x * 0.5f, playerPos.y);
 		player.move(0.0f, ySpeed);
 	}
 	else if (crossRight) {
-		player.setPosition(1000.0f - playerSize.x * 0.5f, playerPos.y);
+		player.setPosition(GROUND_WIDTH - playerSize.x * 0.5f, playerPos.y);
 		player.move(0.0f, ySpeed);
 	}
 	else if (crossTop) {
@@ -154,7 +154,7 @@ void update(sf::RenderWindow& window) {
 		player.move(xSpeed, 0.0f);
 	}
 	else if (crossBottom) {
-		player.setPosition(playerPos.x, 1000.0f - playerSize.y * 0.5f);
+		player.setPosition(playerPos.x, GROUND_HEIGTH - playerSize.y * 0.5f);
 		player.move(xSpeed, 0.0f);
 	}
 	else
