@@ -33,6 +33,7 @@ int main() {
 
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGTH), "Harkkarainen");
 	window.setFramerateLimit(60);
+	window.setMouseCursorVisible(false);
 
 	sf::RectangleShape background = sf::RectangleShape::RectangleShape();
 	background.setSize(sf::Vector2f(GROUND_WIDTH, GROUND_HEIGTH));
@@ -162,7 +163,6 @@ void update(sf::RenderWindow& window) {
 	else
 		player.move(xSpeed, ySpeed);
 
-	// TODO: make view stop moving on edges
 	// Update view position
 	playerPos = player.getPosition();
 
@@ -205,7 +205,7 @@ void update(sf::RenderWindow& window) {
 	// Update cursor position
 	sf::Vector2i mousePosition;
 	mousePosition = sf::Mouse::getPosition(window);
-	crossHair.setPosition(player.getPosition() + sf::Vector2f(mousePosition) - sf::Vector2f(WIDTH / 2.0f, HEIGTH / 2.0f));
+	crossHair.setPosition(view.getCenter() + sf::Vector2f(mousePosition) - sf::Vector2f(WIDTH / 2.0f, HEIGTH / 2.0f));
 
 	// Update bullets
 	for (unsigned int i = 0; i < bullets.size(); i++) {
