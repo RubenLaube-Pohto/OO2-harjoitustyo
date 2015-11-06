@@ -126,6 +126,7 @@ int main() {
 void update(sf::RenderWindow& window) {
 	const float OFFSET = 50.0f;
 	
+	// Update player position
 	sf::Vector2f playerPos = player.getPosition();
 	sf::Vector2f playerSize = player.getSize();
 
@@ -133,6 +134,7 @@ void update(sf::RenderWindow& window) {
 	bool crossRight = (playerPos.x + playerSize.x * 0.5f + xSpeed) > GROUND_WIDTH;
 	bool crossTop = (playerPos.y - playerSize.y * 0.5f + ySpeed) < 0.0f;
 	bool crossBottom = (playerPos.y + playerSize.y * 0.5f + ySpeed) > GROUND_HEIGTH;
+
 	if (crossTop && crossLeft)
 		player.setPosition(playerSize.x * 0.5f, playerSize.y * 0.5f);
 	else if (crossTop && crossRight)
@@ -160,17 +162,52 @@ void update(sf::RenderWindow& window) {
 	else
 		player.move(xSpeed, ySpeed);
 
-
 	// TODO: make view stop moving on edges
+	// Update view position
 	playerPos = player.getPosition();
-	view.setCenter(playerPos);
 
-	sf::Vector2i mousePosition;
-	mousePosition = sf::Mouse::getPosition(window);
-	crossHair.setPosition(player.getPosition() + sf::Vector2f(mousePosition) - sf::Vector2f(WIDTH / 2.0f, HEIGTH / 2.0f));
+	crossLeft = playerPos.x < WIDTH * 0.5f - OFFSET;
+	crossRight = playerPos.x > GROUND_WIDTH - WIDTH * 0.5f + OFFSET;
+	crossTop = playerPos.y < HEIGTH * 0.5f - OFFSET;
+	crossBottom = playerPos.y > GROUND_HEIGTH - HEIGTH * 0.5f + OFFSET;
+
+	if (crossTop && crossLeft)
+		view.setCenter(WIDTH * 0.5f - OFFSET, HEIGTH * 0.5f - OFFSET);
+	else if (crossTop && crossRight)
+		view.setCenter(GROUND_WIDTH - WIDTH * 0.5f + OFFSET, HEIGTH * 0.5f - OFFSET);
+	else if (crossBottom && crossLeft)
+		view.setCenter(WIDTH * 0.5f - OFFSET, GROUND_HEIGTH - HEIGTH * 0.5f + OFFSET);
+	else if (crossBottom && crossRight)
+		view.setCenter(GROUND_WIDTH - WIDTH * 0.5f + OFFSET, GROUND_HEIGTH - HEIGTH * 0.5f + OFFSET);
+	else if (crossLeft) {
+		view.setCenter(WIDTH * 0.5f - OFFSET, playerPos.y);
+		view.move(0.0f, ySpeed);
+	}
+	else if (crossRight) {
+		view.setCenter(GROUND_WIDTH - WIDTH * 0.5f + OFFSET, playerPos.y);
+		view.move(0.0f, ySpeed);
+	}
+	else if (crossTop) {
+		view.setCenter(playerPos.x, HEIGTH * 0.5f - OFFSET);
+		view.move(xSpeed, 0.0f);
+	}
+	else if (crossBottom) {
+		view.setCenter(playerPos.x, GROUND_HEIGTH - HEIGTH * 0.5f + OFFSET);
+		view.move(xSpeed, 0.0f);
+	}
+	else
+		view.setCenter(playerPos);
+
+	// Reset speeds
 	xSpeed = 0.0f;
 	ySpeed = 0.0f;
 
+	// Update cursor position
+	sf::Vector2i mousePosition;
+	mousePosition = sf::Mouse::getPosition(window);
+	crossHair.setPosition(player.getPosition() + sf::Vector2f(mousePosition) - sf::Vector2f(WIDTH / 2.0f, HEIGTH / 2.0f));
+
+	// Update bullets
 	for (unsigned int i = 0; i < bullets.size(); i++) {
 		bullets.at(i).travel();
 		if (!bullets.at(i).isAlive()) {
@@ -178,6 +215,7 @@ void update(sf::RenderWindow& window) {
 		}
 	}
 
+	// Update displayed framerate
 	framerateText.setPosition(view.getCenter() + sf::Vector2f(-WIDTH * 0.5f + 20.0f, -HEIGTH * 0.5f + 20.0f));
 	if (fpsTimer.getElapsedTime().asSeconds() <= 1.0f) {
 		fps++;
