@@ -6,8 +6,8 @@
 const float MOVE_SPEED = 5.0f;
 const int WIDTH = 600;
 const int HEIGTH = WIDTH;
-const float GROUND_WIDTH = 700.0f;
-const float GROUND_HEIGTH = 700.0f;
+const float GROUND_WIDTH = 256.0f * 4;
+const float GROUND_HEIGTH = 256.0f * 4;
 
 PlayerCharacter player;
 sf::View view;
@@ -35,9 +35,13 @@ int main() {
 	window.setFramerateLimit(60);
 	window.setMouseCursorVisible(false);
 
+	sf::Texture backgroundTexture;
+	backgroundTexture.loadFromFile("background.png");
+	backgroundTexture.setRepeated(true);
 	sf::RectangleShape background = sf::RectangleShape::RectangleShape();
+	background.setTexture(&backgroundTexture);
+	background.setTextureRect(sf::IntRect(0, 0, GROUND_WIDTH, GROUND_HEIGTH));
 	background.setSize(sf::Vector2f(GROUND_WIDTH, GROUND_HEIGTH));
-	background.setFillColor(sf::Color::Blue);
 
 	player = PlayerCharacter();
 	player.setSize(sf::Vector2f(50.0f, 50.0f));
