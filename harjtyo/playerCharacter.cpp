@@ -18,6 +18,10 @@ void PlayerCharacter::setPosition(const float x, const float y) {
 	this->sprite.setPosition(x, y);
 }
 
+void PlayerCharacter::setDirection(int d) {
+	this->direction = d;
+}
+
 sf::Vector2f PlayerCharacter::getPosition() {
 	return this->sprite.getPosition();
 }
@@ -28,6 +32,15 @@ sf::Vector2f PlayerCharacter::getSize() {
 
 void PlayerCharacter::move(const float x, const float y) {
 	this->sprite.move(x, y);
+}
+
+void PlayerCharacter::animate() {
+	sf::IntRect nextFrame(frameNumber * (int)size.x, direction * (int)size.y, (int)size.x, (int)size.y);
+	sprite.setTextureRect(nextFrame);
+	
+	++frameNumber;
+	if (frameNumber > 15)
+		frameNumber = 0;
 }
 
 void PlayerCharacter::draw(sf::RenderWindow& window) {

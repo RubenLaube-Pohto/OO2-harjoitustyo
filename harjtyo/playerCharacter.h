@@ -7,19 +7,28 @@
 #include <SFML\System\Vector2.hpp>
 #include "bullet.h"
 
+enum Direction {
+	SOUTH, SOUTHEAST, EAST, NORTHEAST,
+	NORTH, NORTHWEST, WEST, SOUTHWEST
+};
+
 class PlayerCharacter {
 public:
 	PlayerCharacter();
 	Bullet shoot(sf::Vector2f);
 	void move(const float, const float);
+	void animate();
 	void draw(sf::RenderWindow&);
 	void setPosition(const float, const float);
+	void setDirection(int);
 	sf::Vector2f getPosition();
 	sf::Vector2f getSize();
 private:
 	sf::Sprite sprite;
 	sf::Texture texture;
 	sf::Vector2f size;
+	int direction = 0;
+	int frameNumber = 0;
 };
 
 #endif
