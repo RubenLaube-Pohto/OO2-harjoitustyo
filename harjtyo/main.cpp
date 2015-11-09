@@ -4,14 +4,14 @@
 #include "math.h"
 
 const float MOVE_SPEED = 5.0f;
-const int WIDTH = 600;
+const int WIDTH = 700;
 const int HEIGTH = WIDTH;
 const float GROUND_WIDTH = 256.0f * 4;
 const float GROUND_HEIGTH = 256.0f * 4;
 
-PlayerCharacter player;
+PlayerCharacter* player = NULL;
 sf::View view;
-sf::CircleShape crossHair;
+sf::CircleShape crosshair;
 float xSpeed, ySpeed;
 std::vector<Bullet> bullets;
 sf::Text framerateText;
@@ -31,10 +31,12 @@ int main() {
 	framerateText.setFont(fontArial);
 	framerateText.setColor(sf::Color::Red);
 
+	// Load window
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGTH), "Harkkarainen");
 	window.setFramerateLimit(60);
 	window.setMouseCursorVisible(false);
 
+	// Load background
 	sf::Texture backgroundTexture;
 	backgroundTexture.loadFromFile("background.png");
 	backgroundTexture.setRepeated(true);
@@ -43,18 +45,17 @@ int main() {
 	background.setTextureRect(sf::IntRect(0, 0, GROUND_WIDTH, GROUND_HEIGTH));
 	background.setSize(sf::Vector2f(GROUND_WIDTH, GROUND_HEIGTH));
 
-	player = PlayerCharacter();
-	player.setSize(sf::Vector2f(50.0f, 50.0f));
-	player.setOrigin(50.0f/2, 50.0f/2);
-	player.setPosition(GROUND_WIDTH/2, GROUND_HEIGTH/2);
-	player.setFillColor(sf::Color::Yellow);
+	// Load player
+	player = new PlayerCharacter();
+	player->setPosition(GROUND_WIDTH/2, GROUND_HEIGTH/2);
 
-	crossHair = sf::CircleShape::CircleShape();
-	crossHair.setRadius(5.0f);
-	crossHair.setOrigin(5.0f, 5.0f);
-	crossHair.setPosition(GROUND_WIDTH / 2, GROUND_HEIGTH / 2);
+	// Load crosshair cursor
+	crosshair = sf::CircleShape::CircleShape();
+	crosshair.setRadius(5.0f);
+	crosshair.setOrigin(5.0f, 5.0f);
+	crosshair.setPosition(GROUND_WIDTH / 2, GROUND_HEIGTH / 2);
 
-	view = sf::View(player.getPosition(), sf::Vector2f(WIDTH, HEIGTH));
+	view = sf::View(player->getPosition(), sf::Vector2f(WIDTH, HEIGTH));
 
 	xSpeed = 0.0f;
 	ySpeed = 0.0f;
@@ -106,8 +107,8 @@ int main() {
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 			if (cooldown <= cooldownTimer.getElapsedTime().asSeconds()) {
 				cooldownTimer.restart();
-				sf::Vector2f bv = crossHair.getPosition() - player.getPosition();
-				bullets.push_back(Bullet(Math::vector2fUnit(bv), player.getPosition(), Math::vector2fLength(bv)));
+				sf::Vector2f bv = crosshair.getPosition() - player->getPosition();
+				bullets.push_back(Bullet(Math::vector2fUnit(bv), player->getPosition(), Math::vector2fLength(bv)));
 			}
 		}
 
@@ -116,14 +117,17 @@ int main() {
 		window.clear();
 		window.setView(view);
 		window.draw(background);
-		window.draw(player);
-		window.draw(crossHair);
+		player->draw(window);
+		window.draw(crosshair);
 		window.draw(framerateText);
 		for (unsigned int i = 0; i < bullets.size(); i++) {
 			window.draw(bullets.at(i));
 		}
 		window.display();
 	}
+
+	delete player;
+	player = NULL;
 
 	return 0;
 }
@@ -132,8 +136,8 @@ void update(sf::RenderWindow& window) {
 	const float OFFSET = 50.0f;
 	
 	// Update player position
-	sf::Vector2f playerPos = player.getPosition();
-	sf::Vector2f playerSize = player.getSize();
+	sf::Vector2f playerPos = player->getPosition();
+	sf::Vector2f playerSize = player->getSize();
 
 	bool crossLeft = (playerPos.x - playerSize.x * 0.5f + xSpeed) < 0.0f;
 	bool crossRight = (playerPos.x + playerSize.x * 0.5f + xSpeed) > GROUND_WIDTH;
@@ -141,34 +145,34 @@ void update(sf::RenderWindow& window) {
 	bool crossBottom = (playerPos.y + playerSize.y * 0.5f + ySpeed) > GROUND_HEIGTH;
 
 	if (crossTop && crossLeft)
-		player.setPosition(playerSize.x * 0.5f, playerSize.y * 0.5f);
+		player->setPosition(playerSize.x * 0.5f, playerSize.y * 0.5f);
 	else if (crossTop && crossRight)
-		player.setPosition(GROUND_WIDTH - playerSize.x * 0.5f, playerSize.y * 0.5f);
+		player->setPosition(GROUND_WIDTH - playerSize.x * 0.5f, playerSize.y * 0.5f);
 	else if (crossBottom && crossLeft)
-		player.setPosition(playerSize.x * 0.5f, GROUND_HEIGTH - playerSize.y * 0.5f);
+		player->setPosition(playerSize.x * 0.5f, GROUND_HEIGTH - playerSize.y * 0.5f);
 	else if (crossBottom && crossRight)
-		player.setPosition(GROUND_WIDTH - playerSize.x * 0.5f, GROUND_HEIGTH - playerSize.y * 0.5f);
+		player->setPosition(GROUND_WIDTH - playerSize.x * 0.5f, GROUND_HEIGTH - playerSize.y * 0.5f);
 	else if (crossLeft) {
-		player.setPosition(playerSize.x * 0.5f, playerPos.y);
-		player.move(0.0f, ySpeed);
+		player->setPosition(playerSize.x * 0.5f, playerPos.y);
+		player->move(0.0f, ySpeed);
 	}
 	else if (crossRight) {
-		player.setPosition(GROUND_WIDTH - playerSize.x * 0.5f, playerPos.y);
-		player.move(0.0f, ySpeed);
+		player->setPosition(GROUND_WIDTH - playerSize.x * 0.5f, playerPos.y);
+		player->move(0.0f, ySpeed);
 	}
 	else if (crossTop) {
-		player.setPosition(playerPos.x, playerSize.y * 0.5f);
-		player.move(xSpeed, 0.0f);
+		player->setPosition(playerPos.x, playerSize.y * 0.5f);
+		player->move(xSpeed, 0.0f);
 	}
 	else if (crossBottom) {
-		player.setPosition(playerPos.x, GROUND_HEIGTH - playerSize.y * 0.5f);
-		player.move(xSpeed, 0.0f);
+		player->setPosition(playerPos.x, GROUND_HEIGTH - playerSize.y * 0.5f);
+		player->move(xSpeed, 0.0f);
 	}
 	else
-		player.move(xSpeed, ySpeed);
+		player->move(xSpeed, ySpeed);
 
 	// Update view position
-	playerPos = player.getPosition();
+	playerPos = player->getPosition();
 
 	crossLeft = playerPos.x < WIDTH * 0.5f - OFFSET;
 	crossRight = playerPos.x > GROUND_WIDTH - WIDTH * 0.5f + OFFSET;
@@ -209,7 +213,7 @@ void update(sf::RenderWindow& window) {
 	// Update cursor position
 	sf::Vector2i mousePosition;
 	mousePosition = sf::Mouse::getPosition(window);
-	crossHair.setPosition(view.getCenter() + sf::Vector2f(mousePosition) - sf::Vector2f(WIDTH / 2.0f, HEIGTH / 2.0f));
+	crosshair.setPosition(view.getCenter() + sf::Vector2f(mousePosition) - sf::Vector2f(WIDTH / 2.0f, HEIGTH / 2.0f));
 
 	// Update bullets
 	for (unsigned int i = 0; i < bullets.size(); i++) {
