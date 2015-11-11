@@ -7,11 +7,11 @@ PlayerCharacter::PlayerCharacter() {
 	this->sprite.setTexture(this->texture);
 	this->sprite.setTextureRect(sf::IntRect(0, 0, (int)size.x, (int)size.y));
 	this->sprite.setOrigin(sf::Vector2f(size.x * 0.5f, size.y * 0.5f));
+	this->cooldownTimer.restart();
 }
 
-Bullet PlayerCharacter::shoot(sf::Vector2f direction) {
-	Bullet b = Bullet();
-	return b;
+PlayerCharacter::~PlayerCharacter() {
+	
 }
 
 void PlayerCharacter::setPosition(const float x, const float y) {
@@ -45,4 +45,19 @@ void PlayerCharacter::animate() {
 
 void PlayerCharacter::draw(sf::RenderWindow& window) {
 	window.draw(this->sprite);
+}
+
+void PlayerCharacter::updateTimer() {
+	if (cooldown <= cooldownTimer.getElapsedTime().asSeconds()) {
+		cooldownTimer.restart();
+		readyToFire = true;
+	}
+}
+
+bool PlayerCharacter::isReadyToFire() {
+	return readyToFire;
+}
+
+void PlayerCharacter::setReadyToFire(bool b) {
+	readyToFire = b;
 }

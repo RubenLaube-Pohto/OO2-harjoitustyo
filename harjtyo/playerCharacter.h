@@ -15,18 +15,24 @@ enum Direction {
 class PlayerCharacter {
 public:
 	PlayerCharacter();
-	Bullet shoot(sf::Vector2f);
+	~PlayerCharacter();
 	void move(const float, const float);
+	void updateTimer();
 	void animate();
 	void draw(sf::RenderWindow&);
 	void setPosition(const float, const float);
 	void setDirection(int);
 	sf::Vector2f getPosition();
 	sf::Vector2f getSize();
+	bool isReadyToFire();
+	void setReadyToFire(bool);
 private:
 	sf::Sprite sprite;
 	sf::Texture texture;
 	sf::Vector2f size;
+	sf::Clock cooldownTimer;
+	float cooldown = 0.01f;
+	bool readyToFire = false;
 	int direction = 0;
 	int frameNumber = 0;
 };

@@ -1,6 +1,7 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include "playerCharacter.h"
+#include "enemy.h"
 #include "math.h"
 
 const float MOVE_SPEED = 5.0f;
@@ -10,10 +11,12 @@ const float GROUND_WIDTH = 256.0f * 4;
 const float GROUND_HEIGTH = 256.0f * 4;
 
 PlayerCharacter* player = NULL;
+Enemy* enemy;
 sf::View view;
 sf::CircleShape crosshair;
 float xSpeed, ySpeed;
 std::vector<Bullet> bullets;
+std::vector<Bullet> enemyBullets;
 sf::Text framerateText;
 sf::Clock fpsTimer;
 int fps = 0;
@@ -22,8 +25,6 @@ void update(sf::RenderWindow&);
 
 int main() {
 	srand((unsigned int)time(NULL));
-	sf::Clock cooldownTimer;
-	float cooldown = 0.01f;
 
 	sf::Font fontArial;
 	fontArial.loadFromFile("arial.ttf");
@@ -48,6 +49,10 @@ int main() {
 	// Load player
 	player = new PlayerCharacter();
 	player->setPosition(GROUND_WIDTH / 2, GROUND_HEIGTH / 2);
+
+	// Load an enemy
+	enemy = new Enemy();
+	enemy->setPosition(GROUND_WIDTH / 2 - 200, GROUND_HEIGTH / 2);
 
 	// Load crosshair cursor
 	crosshair = sf::CircleShape::CircleShape();
@@ -114,10 +119,10 @@ int main() {
 		}
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-			if (cooldown <= cooldownTimer.getElapsedTime().asSeconds()) {
-				cooldownTimer.restart();
+			if (player->isReadyToFire()) {
 				sf::Vector2f bv = crosshair.getPosition() - player->getPosition();
-				bullets.push_back(Bullet(Math::vector2fUnit(bv), player->getPosition(), Math::vector2fLength(bv)));
+				bullets.push_back(Bullet(Math::vector2fUnit(bv), player->getPosition(), WIDTH * 0.5f));
+				player->setReadyToFire(false);
 			}
 		}
 
@@ -129,6 +134,7 @@ int main() {
 		player->draw(window);
 		window.draw(crosshair);
 		window.draw(framerateText);
+		enemy->draw(window);
 		for (unsigned int i = 0; i < bullets.size(); i++) {
 			window.draw(bullets.at(i));
 		}
@@ -137,6 +143,8 @@ int main() {
 
 	delete player;
 	player = NULL;
+	delete enemy;
+	enemy = NULL;
 
 	return 0;
 }
@@ -144,6 +152,7 @@ int main() {
 void update(sf::RenderWindow& window) {
 	const float OFFSET = 50.0f;
 
+	// Update player
 	if (xSpeed != 0.0f || ySpeed != 0.0f) {
 		// Update player position
 		sf::Vector2f playerPos = player->getPosition();
@@ -223,6 +232,7 @@ void update(sf::RenderWindow& window) {
 		xSpeed = 0.0f;
 		ySpeed = 0.0f;
 	}
+	player->updateTimer();
 
 	// Update cursor position
 	sf::Vector2i mousePosition;
@@ -235,6 +245,14 @@ void update(sf::RenderWindow& window) {
 		if (!bullets.at(i).isAlive()) {
 			bullets.erase(bullets.begin() + i);
 		}
+	}
+
+	// Update enemies
+	enemy->updateTimer();
+	if (enemy->isReadyToFire()) {
+		sf::Vector2f bv = player->getPosition() - enemy->getPosition();
+		bullets.push_back(Bullet(Math::vector2fUnit(bv), enemy->getPosition(), WIDTH * 0.5f));
+		enemy->setReadyToFire(false);
 	}
 
 	// Update displayed framerate
