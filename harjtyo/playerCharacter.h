@@ -15,7 +15,6 @@ enum Direction {
 class PlayerCharacter {
 public:
 	PlayerCharacter();
-	~PlayerCharacter();
 	void move(const float, const float);
 	void updateTimer();
 	void animate();
@@ -31,7 +30,7 @@ private:
 	sf::Texture texture;
 	sf::Vector2f size;
 	sf::Clock cooldownTimer;
-	float cooldown = 0.01f;
+	float cooldown = 0.3f;
 	bool readyToFire = false;
 	int direction = 0;
 	int frameNumber = 0;

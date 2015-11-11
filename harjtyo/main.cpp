@@ -138,6 +138,9 @@ int main() {
 		for (unsigned int i = 0; i < bullets.size(); i++) {
 			window.draw(bullets.at(i));
 		}
+		for (unsigned int i = 0; i < enemyBullets.size(); i++) {
+			window.draw(enemyBullets.at(i));
+		}
 		window.display();
 	}
 
@@ -246,13 +249,30 @@ void update(sf::RenderWindow& window) {
 			bullets.erase(bullets.begin() + i);
 		}
 	}
+	for (unsigned int i = 0; i < enemyBullets.size(); i++) {
+		enemyBullets.at(i).travel();
+		if (!enemyBullets.at(i).isAlive()) {
+			enemyBullets.erase(enemyBullets.begin() + i);
+		}
+	}
 
 	// Update enemies
-	enemy->updateTimer();
-	if (enemy->isReadyToFire()) {
-		sf::Vector2f bv = player->getPosition() - enemy->getPosition();
-		bullets.push_back(Bullet(Math::vector2fUnit(bv), enemy->getPosition(), WIDTH * 0.5f));
-		enemy->setReadyToFire(false);
+	enemy->update();
+	if (enemy->isAlive()) {
+		if (Math::vector2fLength(player->getPosition() - enemy->getPosition()) < 300.0f) {
+			if (enemy->isReadyToFire()) {
+				sf::Vector2f bv = player->getPosition() - enemy->getPosition();
+				enemyBullets.push_back(Bullet(Math::vector2fUnit(bv), enemy->getPosition(), WIDTH * 0.5f));
+				enemy->setReadyToFire(false);
+			}
+		}
+		else {
+			enemy->move(player->getPosition());
+		}
+	}
+	else {
+		delete enemy;
+		enemy = NULL;
 	}
 
 	// Update displayed framerate
@@ -264,5 +284,10 @@ void update(sf::RenderWindow& window) {
 		framerateText.setString(std::to_string(fps));
 		fpsTimer.restart();
 		fps = 0;
+	}
+
+	// Check hits
+	for (unsigned int i = 0; i < bullets.size(); i++) {
+		enemy->checkHit(bullets.at(i).getPosition());
 	}
 }

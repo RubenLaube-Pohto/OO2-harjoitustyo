@@ -10,10 +10,6 @@ PlayerCharacter::PlayerCharacter() {
 	this->cooldownTimer.restart();
 }
 
-PlayerCharacter::~PlayerCharacter() {
-	
-}
-
 void PlayerCharacter::setPosition(const float x, const float y) {
 	this->sprite.setPosition(x, y);
 }
