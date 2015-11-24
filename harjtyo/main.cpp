@@ -11,7 +11,7 @@ const float GROUND_WIDTH = 256.0f * 4;
 const float GROUND_HEIGTH = 256.0f * 4;
 
 PlayerCharacter* player = NULL;
-Enemy* enemy;
+std::vector<Enemy*> enemies;
 sf::View view;
 sf::CircleShape crosshair;
 float xSpeed, ySpeed;
@@ -26,6 +26,7 @@ void update(sf::RenderWindow&);
 int main() {
 	srand((unsigned int)time(NULL));
 
+	// Create framerate display for debug
 	sf::Font fontArial;
 	fontArial.loadFromFile("arial.ttf");
 	framerateText = sf::Text();
@@ -34,7 +35,7 @@ int main() {
 
 	// Load window
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGTH), "Harkkarainen");
-	window.setFramerateLimit(60);
+	window.setFramerateLimit(62);
 	window.setMouseCursorVisible(false);
 
 	// Load textures
@@ -56,10 +57,15 @@ int main() {
 	player = new PlayerCharacter(playerTexture);
 	player->setPosition(GROUND_WIDTH / 2, GROUND_HEIGTH / 2);
 
-	// Load an enemy
-	enemy = new Enemy(enemyTexture);
-	enemy->setPosition(GROUND_WIDTH / 2 - 200, GROUND_HEIGTH / 2);
-
+	// Load enemies
+	for (int i = 0; i < 10; ++i) {
+		Enemy* enemy = new Enemy(enemyTexture);
+		int randX = rand() % (int)GROUND_WIDTH + 1;
+		int randY = rand() % (int)GROUND_HEIGTH + 1;
+		enemy->setPosition(randX, randY);
+		enemies.push_back(enemy);
+	}
+	
 	// Load crosshair cursor
 	crosshair = sf::CircleShape::CircleShape();
 	crosshair.setRadius(5.0f);
@@ -71,6 +77,7 @@ int main() {
 	xSpeed = 0.0f;
 	ySpeed = 0.0f;
 
+	// Game loop
 	while (window.isOpen()) {
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -140,7 +147,9 @@ int main() {
 		window.draw(*player);
 		window.draw(crosshair);
 		window.draw(framerateText);
-		window.draw(*enemy);
+		for (unsigned int i = 0; i < enemies.size(); i++) {
+			window.draw(*(enemies.at(i)));
+		}
 		for (unsigned int i = 0; i < bullets.size(); i++) {
 			window.draw(bullets.at(i));
 		}
@@ -152,8 +161,12 @@ int main() {
 
 	delete player;
 	player = NULL;
-	delete enemy;
-	enemy = NULL;
+
+	while (enemies.size()) {
+		delete enemies.back();
+		enemies.back() = NULL;
+		enemies.pop_back();
+	}
 
 	return 0;
 }
@@ -263,24 +276,29 @@ void update(sf::RenderWindow& window) {
 	}
 
 	// Update enemies
-	enemy->update();
-	if (enemy->isAlive()) {
-		if (Math::vector2fLength(player->getPosition() - enemy->getPosition()) < 300.0f) {
-			if (enemy->isReadyToFire()) {
-				sf::Vector2f bv = player->getPosition() - enemy->getPosition();
-				enemyBullets.push_back(Bullet(Math::vector2fUnit(bv), enemy->getPosition(), WIDTH * 0.5f));
-				enemy->setReadyToFire(false);
+	for (unsigned int i = 0; i < enemies.size(); ++i) {
+		Enemy* enemy = NULL;
+		enemy = enemies.at(i);
+		enemy->update();
+		if (enemy->isAlive()) {
+			if (Math::vector2fLength(player->getPosition() - enemy->getPosition()) < 300.0f) { // Distance between player and enemy
+				if (enemy->isReadyToFire()) {
+					sf::Vector2f bv = player->getPosition() - enemy->getPosition();
+					enemyBullets.push_back(Bullet(Math::vector2fUnit(bv), enemy->getPosition(), WIDTH * 0.5f));
+					enemy->setReadyToFire(false);
+				}
+			}
+			else {
+				sf::Vector2f nextStep = Math::vector2fUnit(player->getPosition() - enemy->getPosition());
+				enemy->move(nextStep);
+				enemy->setHitbox(enemy->getGlobalBounds());
 			}
 		}
 		else {
-			sf::Vector2f nextStep = Math::vector2fUnit(player->getPosition() - enemy->getPosition());
-			enemy->move(nextStep);
-			enemy->setHitbox(enemy->getGlobalBounds());
+			delete enemies.at(i);
+			enemies.at(i) = NULL;
+			enemies.erase(enemies.begin() + i);
 		}
-	}
-	else {
-		delete enemy;
-		enemy = NULL;
 	}
 
 	// Update displayed framerate
@@ -294,8 +312,12 @@ void update(sf::RenderWindow& window) {
 		fps = 0;
 	}
 
-	// Check hits
-	for (unsigned int i = 0; i < bullets.size(); i++) {
-		enemy->checkHit(bullets.at(i).getPosition());
+	// Check hits on enemies
+	for (unsigned int i = 0; i < enemies.size(); ++i) {
+		Enemy* enemy = NULL;
+		enemy = enemies.at(i);
+		for (unsigned int j = 0; j < bullets.size(); ++j) {
+			enemy->checkHit(bullets.at(j).getPosition());
+		}
 	}
 }

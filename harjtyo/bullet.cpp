@@ -1,5 +1,4 @@
 #include "bullet.h"
-#include <time.h>
 #include "math.h"
 
 Bullet::Bullet() : CircleShape () {
