@@ -37,17 +37,21 @@ int main() {
 	window.setFramerateLimit(60);
 	window.setMouseCursorVisible(false);
 
-	// Load background
+	// Load textures
 	sf::Texture backgroundTexture;
 	backgroundTexture.loadFromFile("background.png");
 	backgroundTexture.setRepeated(true);
+	sf::Texture playerTexture;
+	playerTexture.loadFromFile("mech.png");
+
+	// Load background
 	sf::RectangleShape background = sf::RectangleShape::RectangleShape();
 	background.setTexture(&backgroundTexture);
 	background.setTextureRect(sf::IntRect(0, 0, (int)GROUND_WIDTH, (int)GROUND_HEIGTH));
 	background.setSize(sf::Vector2f(GROUND_WIDTH, GROUND_HEIGTH));
 
 	// Load player
-	player = new PlayerCharacter();
+	player = new PlayerCharacter(playerTexture);
 	player->setPosition(GROUND_WIDTH / 2, GROUND_HEIGTH / 2);
 
 	// Load an enemy
@@ -131,7 +135,7 @@ int main() {
 		window.clear();
 		window.setView(view);
 		window.draw(background);
-		player->draw(window);
+		window.draw(*player);
 		window.draw(crosshair);
 		window.draw(framerateText);
 		enemy->draw(window);
