@@ -24,7 +24,7 @@ public:
 private:
 	sf::Vector2f size;
 	sf::Clock cooldownTimer;
-	float cooldown = 0.3f;
+	float cooldown = 0.15f;
 	bool readyToFire = false;
 	int direction = 0;
 	int frameNumber = 0;

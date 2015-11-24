@@ -5,21 +5,23 @@
 #include "math.h"
 
 const float MOVE_SPEED = 5.0f;
-const int WIDTH = 700;
-const int HEIGTH = WIDTH;
+const int WIDTH = 800;
+const int HEIGTH = 600;
 const float GROUND_WIDTH = 256.0f * 4;
 const float GROUND_HEIGTH = 256.0f * 4;
 
+float xSpeed, ySpeed;
 PlayerCharacter* player = NULL;
-std::vector<Enemy*> enemies;
+
 sf::View view;
 sf::CircleShape crosshair;
-float xSpeed, ySpeed;
+std::vector<Enemy*> enemies;
 std::vector<Bullet> bullets;
 std::vector<Bullet> enemyBullets;
+
+int fps = 0;
 sf::Text framerateText;
 sf::Clock fpsTimer;
-int fps = 0;
 
 void update(sf::RenderWindow&);
 
@@ -296,6 +298,12 @@ void update(sf::RenderWindow& window) {
 			}
 		}
 		else {
+			enemy = new Enemy(*(enemies.at(i)->getTexture()));
+			int randX = rand() % (int)GROUND_WIDTH + 1;
+			int randY = rand() % (int)GROUND_HEIGTH + 1;
+			enemy->setPosition((float)randX, (float)randY);
+			enemies.push_back(enemy);
+
 			delete enemies.at(i);
 			enemies.at(i) = NULL;
 			enemies.erase(enemies.begin() + i);
@@ -328,6 +336,7 @@ void update(sf::RenderWindow& window) {
 	for (int i = enemyBullets.size() - 1; i >= 0; --i) {
 		if (player->checkHit(enemyBullets.at(i).getPosition())) {
 			if (!player->isAlive()) {
+				// TODO: Add endscreen and save highscore
 				window.close();
 			}
 			enemyBullets.erase(enemyBullets.begin() + i);
