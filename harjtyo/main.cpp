@@ -43,6 +43,8 @@ int main() {
 	backgroundTexture.setRepeated(true);
 	sf::Texture playerTexture;
 	playerTexture.loadFromFile("mech.png");
+	sf::Texture enemyTexture;
+	enemyTexture.loadFromFile("enemy.png");
 
 	// Load background
 	sf::RectangleShape background = sf::RectangleShape::RectangleShape();
@@ -55,7 +57,7 @@ int main() {
 	player->setPosition(GROUND_WIDTH / 2, GROUND_HEIGTH / 2);
 
 	// Load an enemy
-	enemy = new Enemy();
+	enemy = new Enemy(enemyTexture);
 	enemy->setPosition(GROUND_WIDTH / 2 - 200, GROUND_HEIGTH / 2);
 
 	// Load crosshair cursor
@@ -138,7 +140,7 @@ int main() {
 		window.draw(*player);
 		window.draw(crosshair);
 		window.draw(framerateText);
-		enemy->draw(window);
+		window.draw(*enemy);
 		for (unsigned int i = 0; i < bullets.size(); i++) {
 			window.draw(bullets.at(i));
 		}
@@ -271,7 +273,9 @@ void update(sf::RenderWindow& window) {
 			}
 		}
 		else {
-			enemy->move(player->getPosition());
+			sf::Vector2f nextStep = Math::vector2fUnit(player->getPosition() - enemy->getPosition());
+			enemy->move(nextStep);
+			enemy->setHitbox(enemy->getGlobalBounds());
 		}
 	}
 	else {

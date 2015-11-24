@@ -1,26 +1,18 @@
 #ifndef ENEMYH
 #define ENEMYH
 
-#include <SFML\Graphics\RenderWindow.hpp>
-#include <SFML\Graphics\Sprite.hpp>
-#include <SFML\Graphics\Texture.hpp>
-#include <SFML\Graphics\Rect.hpp>
+#include <SFML\Graphics.hpp>
 
-class Enemy {
+class Enemy : public sf::Sprite {
 public:
-	Enemy();
-	void draw(sf::RenderWindow&);
-	void setPosition(const float, const float);
+	Enemy(const sf::Texture&);
 	bool isReadyToFire();
 	void setReadyToFire(bool);
+	void setHitbox(sf::FloatRect);
 	void update();
-	sf::Vector2f getPosition();
-	void move(const sf::Vector2f&);
 	void checkHit(const sf::Vector2f&);
 	bool isAlive();
 private:
-	sf::Sprite sprite;
-	sf::Texture texture;
 	sf::Vector2f size;
 	sf::Clock cooldownTimer;
 	float cooldown = 1.5f;
