@@ -10,7 +10,7 @@ public:
 	void setReadyToFire(bool);
 	void setHitbox(sf::FloatRect);
 	void update();
-	void checkHit(const sf::Vector2f&);
+	bool checkHit(const sf::Vector2f&);
 	bool isAlive();
 private:
 	sf::Vector2f size;

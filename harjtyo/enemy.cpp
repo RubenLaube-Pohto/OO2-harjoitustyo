@@ -22,15 +22,17 @@ void Enemy::update() {
 		cooldownTimer.restart();
 		readyToFire = true;
 	}
-	if (healthPoints == 0) {
+	if (healthPoints <= 0) {
 		alive = false;
 	}
 }
 
-void Enemy::checkHit(const sf::Vector2f& point) {
+bool Enemy::checkHit(const sf::Vector2f& point) {
 	if (hitbox.contains(point)) {
 		--healthPoints;
+		return true;
 	}
+	return false;
 }
 
 void Enemy::setHitbox(sf::FloatRect hitbox) {

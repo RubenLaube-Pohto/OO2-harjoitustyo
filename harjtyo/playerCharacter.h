@@ -18,6 +18,9 @@ public:
 	sf::Vector2f getSize();
 	bool isReadyToFire();
 	void setReadyToFire(bool);
+	bool checkHit(const sf::Vector2f&);
+	bool isAlive();
+	void setHitbox(sf::FloatRect);
 private:
 	sf::Vector2f size;
 	sf::Clock cooldownTimer;
@@ -25,6 +28,9 @@ private:
 	bool readyToFire = false;
 	int direction = 0;
 	int frameNumber = 0;
+	int healthPoints = 50;
+	bool alive;
+	sf::FloatRect hitbox;
 };
 
 #endif

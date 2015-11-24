@@ -62,7 +62,7 @@ int main() {
 		Enemy* enemy = new Enemy(enemyTexture);
 		int randX = rand() % (int)GROUND_WIDTH + 1;
 		int randY = rand() % (int)GROUND_HEIGTH + 1;
-		enemy->setPosition(randX, randY);
+		enemy->setPosition((float)randX, (float)randY);
 		enemies.push_back(enemy);
 	}
 	
@@ -214,6 +214,7 @@ void update(sf::RenderWindow& window) {
 		else
 			player->move(xSpeed, ySpeed);
 
+		player->setHitbox(player->getGlobalBounds());
 
 		// Update view position
 		playerPos = player->getPosition();
@@ -316,8 +317,20 @@ void update(sf::RenderWindow& window) {
 	for (unsigned int i = 0; i < enemies.size(); ++i) {
 		Enemy* enemy = NULL;
 		enemy = enemies.at(i);
-		for (unsigned int j = 0; j < bullets.size(); ++j) {
-			enemy->checkHit(bullets.at(j).getPosition());
+		for (int j = bullets.size() - 1; j >= 0; --j) {
+			if (enemy->checkHit(bullets.at(j).getPosition())) {
+				bullets.erase(bullets.begin() + j);
+			}
+		}
+	}
+
+	// Check hits on player
+	for (int i = enemyBullets.size() - 1; i >= 0; --i) {
+		if (player->checkHit(enemyBullets.at(i).getPosition())) {
+			if (!player->isAlive()) {
+				window.close();
+			}
+			enemyBullets.erase(enemyBullets.begin() + i);
 		}
 	}
 }

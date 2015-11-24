@@ -6,6 +6,8 @@ PlayerCharacter::PlayerCharacter(const sf::Texture& texture) : Sprite() {
 	this->setTextureRect(sf::IntRect(0, 0, (int)size.x, (int)size.y));
 	this->setOrigin(sf::Vector2f(size.x * 0.5f, size.y * 0.5f));
 	this->cooldownTimer.restart();
+	this->alive = true;
+	this->hitbox = this->getGlobalBounds();
 }
 
 void PlayerCharacter::setDirection(int d) {
@@ -38,4 +40,23 @@ bool PlayerCharacter::isReadyToFire() {
 
 void PlayerCharacter::setReadyToFire(bool b) {
 	readyToFire = b;
+}
+
+bool PlayerCharacter::checkHit(const sf::Vector2f& point) {
+	if (hitbox.contains(point)) {
+		--healthPoints;
+		if (healthPoints <= 0) {
+			this->alive = false;
+		}
+		return true;
+	}
+	return false;
+}
+
+void PlayerCharacter::setHitbox(sf::FloatRect hitbox) {
+	this->hitbox = hitbox;
+}
+
+bool PlayerCharacter::isAlive() {
+	return alive;
 }
