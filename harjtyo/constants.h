@@ -1,7 +1,7 @@
 #ifndef CONSTANTSH
 #define CONSTANTSH
 
-#include <string>;
+#include <string>
 
 const std::string TITLE = "Harkkarainen";
 const std::string FONT_FILE = "Fonts\\arial.ttf";

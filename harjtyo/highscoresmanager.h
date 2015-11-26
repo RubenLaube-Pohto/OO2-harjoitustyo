@@ -13,8 +13,8 @@ public:
 	void newScore(string, int);
 	void displayScoresInConsole();
 private:
-	multimap<string, int> highscores;
-	const int MAX_SIZE = 5;
+	multimap<int, string> highscores;
+	const unsigned int MAX_SIZE = 5;
 	string filepath;
 
 	void loadFromFile();

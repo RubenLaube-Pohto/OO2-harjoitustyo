@@ -8,10 +8,12 @@
 #include "highscoresmanager.h"
 
 float xSpeed, ySpeed;
+bool gameover = false;
 
 PlayerCharacter* player = NULL;
 sf::View view;
 sf::Sprite crosshair;
+sf::RectangleShape background;
 std::vector<Enemy*> enemies;
 std::vector<Bullet> bullets;
 std::vector<Bullet> enemyBullets;
@@ -28,6 +30,9 @@ sf::Text framerateText;
 sf::Clock fpsTimer;
 
 void update(sf::RenderWindow&);
+void draw(sf::RenderWindow&);
+void handleInput();
+void cleanUp();
 
 int main() {
 	srand((unsigned int)time(NULL));
@@ -59,7 +64,6 @@ int main() {
 	crosshairTexture.loadFromFile(CROSSHAIR_TEXTURE_FILE);
 
 	// Load background
-	sf::RectangleShape background = sf::RectangleShape::RectangleShape();
 	background.setTexture(&backgroundTexture);
 	background.setTextureRect(sf::IntRect(0, 0, (int)GROUND_WIDTH, (int)GROUND_HEIGTH));
 	background.setSize(sf::Vector2f(GROUND_WIDTH, GROUND_HEIGTH));
@@ -111,7 +115,6 @@ int main() {
 
 	// Load highscores manager
 	highscores = new HighscoresManager(HIGHSCORES_FILE);
-	highscores->newScore("jydfj esim", 999);
 	highscores->displayScoresInConsole();
 
 	// Game loop
@@ -127,89 +130,14 @@ int main() {
 			}
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) &&
-			sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
-			xSpeed = -MOVE_SPEED * cos(Math::PI * 0.25f);
-			ySpeed = -MOVE_SPEED * sin(Math::PI * 0.25f);
-			player->setDirection(Direction::NORTHWEST);
+		if (!gameover) {
+			handleInput();
+			update(window);
+			draw(window);
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) &&
-			     sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-			xSpeed = MOVE_SPEED * cos(Math::PI * 0.25f);
-			ySpeed = -MOVE_SPEED * sin(Math::PI * 0.25f);
-			player->setDirection(Direction::NORTHEAST);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) &&
-			     sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
-			xSpeed = -MOVE_SPEED * cos(Math::PI * 0.25f);
-			ySpeed = MOVE_SPEED * sin(Math::PI * 0.25f);
-			player->setDirection(Direction::SOUTHWEST);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) &&
-			     sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-			xSpeed = MOVE_SPEED * cos(Math::PI * 0.25f);
-			ySpeed = MOVE_SPEED * sin(Math::PI * 0.25f);
-			player->setDirection(Direction::SOUTHEAST);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
-			ySpeed = -MOVE_SPEED;
-			player->setDirection(Direction::NORTH);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
-			xSpeed = -MOVE_SPEED;
-			player->setDirection(Direction::WEST);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
-			ySpeed = MOVE_SPEED;
-			player->setDirection(Direction::SOUTH);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-			xSpeed = MOVE_SPEED;
-			player->setDirection(Direction::EAST);
-		}
-
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-			if (player->isReadyToFire()) {
-				sf::Vector2f bv = crosshair.getPosition() - player->getPosition();
-				bullets.push_back(Bullet(Math::vector2fUnit(bv), player->getPosition(), WIDTH * 0.5f));
-				player->setReadyToFire(false);
-				playerShootSound.play();
-			}
-		}
-
-		update(window);
-
-		window.clear();
-		window.setView(view);
-		window.draw(background);
-		window.draw(*player);
-		for (unsigned int i = 0; i < enemies.size(); i++) {
-			window.draw(*(enemies.at(i)));
-		}
-		for (unsigned int i = 0; i < bullets.size(); i++) {
-			window.draw(bullets.at(i));
-		}
-		for (unsigned int i = 0; i < enemyBullets.size(); i++) {
-			window.draw(enemyBullets.at(i));
-		}
-		window.draw(crosshair);
-		if (DEBUG) {
-			window.draw(framerateText);
-		}
-		window.display();
 	}
 
-	delete player;
-	player = NULL;
-
-	delete highscores;
-	highscores = NULL;
-
-	while (enemies.size()) {
-		delete enemies.back();
-		enemies.back() = NULL;
-		enemies.pop_back();
-	}
+	cleanUp();
 
 	return 0;
 }
@@ -381,8 +309,96 @@ void update(sf::RenderWindow& window) {
 				// TODO: Add endscreen and save highscore
 				playerDeathSound.play();
 				gameoverSound.play();
+				gameover = true;
 			}
 			enemyBullets.erase(enemyBullets.begin() + i);
 		}
 	}
+}
+
+void handleInput() {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) &&
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
+		xSpeed = -MOVE_SPEED * cos(Math::PI * 0.25f);
+		ySpeed = -MOVE_SPEED * sin(Math::PI * 0.25f);
+		player->setDirection(Direction::NORTHWEST);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) &&
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+		xSpeed = MOVE_SPEED * cos(Math::PI * 0.25f);
+		ySpeed = -MOVE_SPEED * sin(Math::PI * 0.25f);
+		player->setDirection(Direction::NORTHEAST);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) &&
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
+		xSpeed = -MOVE_SPEED * cos(Math::PI * 0.25f);
+		ySpeed = MOVE_SPEED * sin(Math::PI * 0.25f);
+		player->setDirection(Direction::SOUTHWEST);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) &&
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+		xSpeed = MOVE_SPEED * cos(Math::PI * 0.25f);
+		ySpeed = MOVE_SPEED * sin(Math::PI * 0.25f);
+		player->setDirection(Direction::SOUTHEAST);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
+		ySpeed = -MOVE_SPEED;
+		player->setDirection(Direction::NORTH);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
+		xSpeed = -MOVE_SPEED;
+		player->setDirection(Direction::WEST);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
+		ySpeed = MOVE_SPEED;
+		player->setDirection(Direction::SOUTH);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+		xSpeed = MOVE_SPEED;
+		player->setDirection(Direction::EAST);
+	}
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+		if (player->isReadyToFire()) {
+			sf::Vector2f bv = crosshair.getPosition() - player->getPosition();
+			bullets.push_back(Bullet(Math::vector2fUnit(bv), player->getPosition(), WIDTH * 0.5f));
+			player->setReadyToFire(false);
+			playerShootSound.play();
+		}
+	}
+}
+
+void cleanUp() {
+	delete player;
+	player = NULL;
+
+	delete highscores;
+	highscores = NULL;
+
+	while (enemies.size()) {
+		delete enemies.back();
+		enemies.back() = NULL;
+		enemies.pop_back();
+	}
+}
+
+void draw(sf::RenderWindow& window) {
+	window.clear();
+	window.setView(view);
+	window.draw(background);
+	window.draw(*player);
+	for (unsigned int i = 0; i < enemies.size(); i++) {
+		window.draw(*(enemies.at(i)));
+	}
+	for (unsigned int i = 0; i < bullets.size(); i++) {
+		window.draw(bullets.at(i));
+	}
+	for (unsigned int i = 0; i < enemyBullets.size(); i++) {
+		window.draw(enemyBullets.at(i));
+	}
+	window.draw(crosshair);
+	if (DEBUG) {
+		window.draw(framerateText);
+	}
+	window.display();
 }
