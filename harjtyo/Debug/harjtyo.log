@@ -1,4 +1,4 @@
-﻿Build started 26.11.2015 17:13:44.
+﻿Build started 26.11.2015 19:02:33.
      1>Project "E:\Documents\GitHub\OO2\harjtyo\harjtyo\harjtyo.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /I"E:\Documents\GitHub\OO2\harjtyo\SFML-2.3.2\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
@@ -7,6 +7,7 @@
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Documents\GitHub\OO2\harjtyo\Debug\harjtyo.exe" /INCREMENTAL /NOLOGO /LIBPATH:"E:\Documents\GitHub\OO2\harjtyo\SFML-2.3.2\lib" "sfml-audio-d.lib" "sfml-graphics-d.lib" "sfml-system-d.lib" "sfml-window-d.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"E:\Documents\GitHub\OO2\harjtyo\Debug\harjtyo.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\Documents\GitHub\OO2\harjtyo\Debug\harjtyo.lib" /MACHINE:X86 Debug\bullet.obj
          Debug\enemy.obj
+         Debug\highscoresmanager.obj
          Debug\main.obj
          Debug\math.obj
          Debug\playerCharacter.obj
@@ -15,4 +16,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:03.12
+Time Elapsed 00:00:03.15

@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="highscoresmanager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math.cpp" />
     <ClCompile Include="playerCharacter.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="bullet.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="highscoresmanager.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="playerCharacter.h" />
   </ItemGroup>

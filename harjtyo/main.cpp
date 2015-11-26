@@ -5,6 +5,7 @@
 #include "enemy.h"
 #include "math.h"
 #include "constants.h"
+#include "highscoresmanager.h"
 
 float xSpeed, ySpeed;
 
@@ -19,6 +20,8 @@ sf::Sound gameoverSound;
 sf::Sound playerDeathSound;
 sf::Sound playerShootSound;
 sf::Sound enemyShootSound;
+
+HighscoresManager* highscores = NULL;
 
 int fps = 0;
 sf::Text framerateText;
@@ -105,6 +108,11 @@ int main() {
 	playerDeathSound = sf::Sound(sbPlayerDeathSound);
 	playerShootSound = sf::Sound(sbPlayerShootSound);
 	enemyShootSound = sf::Sound(sbEnenmyShootSound);
+
+	// Load highscores manager
+	highscores = new HighscoresManager(HIGHSCORES_FILE);
+	highscores->newScore("jydfj esim", 999);
+	highscores->displayScoresInConsole();
 
 	// Game loop
 	while (window.isOpen()) {
@@ -194,6 +202,9 @@ int main() {
 	delete player;
 	player = NULL;
 
+	delete highscores;
+	highscores = NULL;
+
 	while (enemies.size()) {
 		delete enemies.back();
 		enemies.back() = NULL;
@@ -204,8 +215,6 @@ int main() {
 }
 
 void update(sf::RenderWindow& window) {
-	const float OFFSET = 50.0f;
-
 	// Update player
 	if (xSpeed != 0.0f || ySpeed != 0.0f) {
 		// Update player position
@@ -251,33 +260,33 @@ void update(sf::RenderWindow& window) {
 		// Update view position
 		playerPos = player->getPosition();
 
-		crossLeft = playerPos.x < WIDTH * 0.5f - OFFSET;
-		crossRight = playerPos.x > GROUND_WIDTH - WIDTH * 0.5f + OFFSET;
-		crossTop = playerPos.y < HEIGTH * 0.5f - OFFSET;
-		crossBottom = playerPos.y > GROUND_HEIGTH - HEIGTH * 0.5f + OFFSET;
+		crossLeft = playerPos.x < WIDTH * 0.5f - CAMERA_MAX_OFFSET;
+		crossRight = playerPos.x > GROUND_WIDTH - WIDTH * 0.5f + CAMERA_MAX_OFFSET;
+		crossTop = playerPos.y < HEIGTH * 0.5f - CAMERA_MAX_OFFSET;
+		crossBottom = playerPos.y > GROUND_HEIGTH - HEIGTH * 0.5f + CAMERA_MAX_OFFSET;
 
 		if (crossTop && crossLeft)
-			view.setCenter(WIDTH * 0.5f - OFFSET, HEIGTH * 0.5f - OFFSET);
+			view.setCenter(WIDTH * 0.5f - CAMERA_MAX_OFFSET, HEIGTH * 0.5f - CAMERA_MAX_OFFSET);
 		else if (crossTop && crossRight)
-			view.setCenter(GROUND_WIDTH - WIDTH * 0.5f + OFFSET, HEIGTH * 0.5f - OFFSET);
+			view.setCenter(GROUND_WIDTH - WIDTH * 0.5f + CAMERA_MAX_OFFSET, HEIGTH * 0.5f - CAMERA_MAX_OFFSET);
 		else if (crossBottom && crossLeft)
-			view.setCenter(WIDTH * 0.5f - OFFSET, GROUND_HEIGTH - HEIGTH * 0.5f + OFFSET);
+			view.setCenter(WIDTH * 0.5f - CAMERA_MAX_OFFSET, GROUND_HEIGTH - HEIGTH * 0.5f + CAMERA_MAX_OFFSET);
 		else if (crossBottom && crossRight)
-			view.setCenter(GROUND_WIDTH - WIDTH * 0.5f + OFFSET, GROUND_HEIGTH - HEIGTH * 0.5f + OFFSET);
+			view.setCenter(GROUND_WIDTH - WIDTH * 0.5f + CAMERA_MAX_OFFSET, GROUND_HEIGTH - HEIGTH * 0.5f + CAMERA_MAX_OFFSET);
 		else if (crossLeft) {
-			view.setCenter(WIDTH * 0.5f - OFFSET, playerPos.y);
+			view.setCenter(WIDTH * 0.5f - CAMERA_MAX_OFFSET, playerPos.y);
 			view.move(0.0f, ySpeed);
 		}
 		else if (crossRight) {
-			view.setCenter(GROUND_WIDTH - WIDTH * 0.5f + OFFSET, playerPos.y);
+			view.setCenter(GROUND_WIDTH - WIDTH * 0.5f + CAMERA_MAX_OFFSET, playerPos.y);
 			view.move(0.0f, ySpeed);
 		}
 		else if (crossTop) {
-			view.setCenter(playerPos.x, HEIGTH * 0.5f - OFFSET);
+			view.setCenter(playerPos.x, HEIGTH * 0.5f - CAMERA_MAX_OFFSET);
 			view.move(xSpeed, 0.0f);
 		}
 		else if (crossBottom) {
-			view.setCenter(playerPos.x, GROUND_HEIGTH - HEIGTH * 0.5f + OFFSET);
+			view.setCenter(playerPos.x, GROUND_HEIGTH - HEIGTH * 0.5f + CAMERA_MAX_OFFSET);
 			view.move(xSpeed, 0.0f);
 		}
 		else
