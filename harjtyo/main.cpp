@@ -3,12 +3,7 @@
 #include "playerCharacter.h"
 #include "enemy.h"
 #include "math.h"
-
-const float MOVE_SPEED = 5.0f;
-const int WIDTH = 800;
-const int HEIGTH = 600;
-const float GROUND_WIDTH = 256.0f * 4;
-const float GROUND_HEIGTH = 256.0f * 4;
+#include "constants.h"
 
 float xSpeed, ySpeed;
 PlayerCharacter* player = NULL;
@@ -30,24 +25,24 @@ int main() {
 
 	// Create framerate display for debug
 	sf::Font fontArial;
-	fontArial.loadFromFile("arial.ttf");
+	fontArial.loadFromFile(FONT_FILE);
 	framerateText = sf::Text();
 	framerateText.setFont(fontArial);
 	framerateText.setColor(sf::Color::Red);
 
 	// Load window
-	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGTH), "Harkkarainen");
+	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGTH), TITLE);
 	window.setFramerateLimit(62);
 	window.setMouseCursorVisible(false);
 
 	// Load textures
 	sf::Texture backgroundTexture;
-	backgroundTexture.loadFromFile("background.png");
+	backgroundTexture.loadFromFile(BG_TEXTURE_FILE);
 	backgroundTexture.setRepeated(true);
 	sf::Texture playerTexture;
-	playerTexture.loadFromFile("mech.png");
+	playerTexture.loadFromFile(PLAYER_TEXTURE_FILE);
 	sf::Texture enemyTexture;
-	enemyTexture.loadFromFile("enemy.png");
+	enemyTexture.loadFromFile(ENEMY_TEXTURE_FILE);
 
 	// Load background
 	sf::RectangleShape background = sf::RectangleShape::RectangleShape();
@@ -148,7 +143,6 @@ int main() {
 		window.draw(background);
 		window.draw(*player);
 		window.draw(crosshair);
-		window.draw(framerateText);
 		for (unsigned int i = 0; i < enemies.size(); i++) {
 			window.draw(*(enemies.at(i)));
 		}
@@ -157,6 +151,9 @@ int main() {
 		}
 		for (unsigned int i = 0; i < enemyBullets.size(); i++) {
 			window.draw(enemyBullets.at(i));
+		}
+		if (DEBUG) {
+			window.draw(framerateText);
 		}
 		window.display();
 	}
@@ -311,14 +308,16 @@ void update(sf::RenderWindow& window) {
 	}
 
 	// Update displayed framerate
-	framerateText.setPosition(view.getCenter() + sf::Vector2f(-WIDTH * 0.5f + 20.0f, -HEIGTH * 0.5f + 20.0f));
-	if (fpsTimer.getElapsedTime().asSeconds() <= 1.0f) {
-		fps++;
-	}
-	else {
-		framerateText.setString(std::to_string(fps));
-		fpsTimer.restart();
-		fps = 0;
+	if (DEBUG) {
+		framerateText.setPosition(view.getCenter() + sf::Vector2f(-WIDTH * 0.5f + 20.0f, -HEIGTH * 0.5f + 20.0f));
+		if (fpsTimer.getElapsedTime().asSeconds() <= 1.0f) {
+			fps++;
+		}
+		else {
+			framerateText.setString(std::to_string(fps));
+			fpsTimer.restart();
+			fps = 0;
+		}
 	}
 
 	// Check hits on enemies

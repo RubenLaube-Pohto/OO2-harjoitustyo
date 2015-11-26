@@ -160,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h" />
+    <ClInclude Include="constants.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="playerCharacter.h" />
