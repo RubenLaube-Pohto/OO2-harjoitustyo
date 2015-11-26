@@ -165,6 +165,19 @@
     <ClInclude Include="math.h" />
     <ClInclude Include="playerCharacter.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\background.png" />
+    <Image Include="Textures\enemy.png" />
+    <Image Include="Textures\mech.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Fonts\arial.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Audio\bass-or-die-loop.wav" />
+    <Media Include="Audio\gameover.wav" />
+    <Media Include="Audio\pain.wav" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
