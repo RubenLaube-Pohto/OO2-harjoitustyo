@@ -7,10 +7,10 @@
 #include "constants.h"
 
 float xSpeed, ySpeed;
-PlayerCharacter* player = NULL;
 
+PlayerCharacter* player = NULL;
 sf::View view;
-sf::CircleShape crosshair;
+sf::Sprite crosshair;
 std::vector<Enemy*> enemies;
 std::vector<Bullet> bullets;
 std::vector<Bullet> enemyBullets;
@@ -45,10 +45,15 @@ int main() {
 	sf::Texture backgroundTexture;
 	backgroundTexture.loadFromFile(BG_TEXTURE_FILE);
 	backgroundTexture.setRepeated(true);
+
 	sf::Texture playerTexture;
 	playerTexture.loadFromFile(PLAYER_TEXTURE_FILE);
+
 	sf::Texture enemyTexture;
 	enemyTexture.loadFromFile(ENEMY_TEXTURE_FILE);
+
+	sf::Texture crosshairTexture;
+	crosshairTexture.loadFromFile(CROSSHAIR_TEXTURE_FILE);
 
 	// Load background
 	sf::RectangleShape background = sf::RectangleShape::RectangleShape();
@@ -70,13 +75,12 @@ int main() {
 	}
 	
 	// Load crosshair cursor
-	crosshair = sf::CircleShape::CircleShape();
-	crosshair.setRadius(5.0f);
-	crosshair.setOrigin(5.0f, 5.0f);
-	crosshair.setPosition(GROUND_WIDTH / 2, GROUND_HEIGTH / 2);
+	crosshair.setTexture(crosshairTexture);
+	crosshair.setOrigin(crosshairTexture.getSize().x * 0.5f, crosshairTexture.getSize().y * 0.5f);
+	crosshair.setScale(0.2f, 0.2f);
 
+	// Initialize camera and moving speeds
 	view = sf::View(player->getPosition(), sf::Vector2f((float)WIDTH, (float)HEIGTH));
-
 	xSpeed = 0.0f;
 	ySpeed = 0.0f;
 
@@ -101,8 +105,6 @@ int main() {
 	playerDeathSound = sf::Sound(sbPlayerDeathSound);
 	playerShootSound = sf::Sound(sbPlayerShootSound);
 	enemyShootSound = sf::Sound(sbEnenmyShootSound);
-	
-	
 
 	// Game loop
 	while (window.isOpen()) {
@@ -173,7 +175,6 @@ int main() {
 		window.setView(view);
 		window.draw(background);
 		window.draw(*player);
-		window.draw(crosshair);
 		for (unsigned int i = 0; i < enemies.size(); i++) {
 			window.draw(*(enemies.at(i)));
 		}
@@ -183,6 +184,7 @@ int main() {
 		for (unsigned int i = 0; i < enemyBullets.size(); i++) {
 			window.draw(enemyBullets.at(i));
 		}
+		window.draw(crosshair);
 		if (DEBUG) {
 			window.draw(framerateText);
 		}
@@ -312,7 +314,7 @@ void update(sf::RenderWindow& window) {
 		enemy = enemies.at(i);
 		enemy->update();
 		if (enemy->isAlive()) {
-			if (Math::vector2fLength(player->getPosition() - enemy->getPosition()) < 300.0f) { // Distance between player and enemy
+			if (Math::vector2fLength(player->getPosition() - enemy->getPosition()) < ENEMY_SHOOTING_DISTANCE) {
 				if (enemy->isReadyToFire()) {
 					sf::Vector2f bv = player->getPosition() - enemy->getPosition();
 					enemyBullets.push_back(Bullet(Math::vector2fUnit(bv), enemy->getPosition(), WIDTH * 0.5f));

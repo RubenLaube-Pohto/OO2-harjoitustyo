@@ -14,4 +14,7 @@ namespace Math {
 		float y = v.x * sin(angle) + v.y * cos(angle);
 		return sf::Vector2f(x, y);
 	}
+	sf::Vector2f vector2fMultiply(sf::Vector2f& v, float f) {
+		return sf::Vector2f(v.x * f, v.y * f);
+	}
 }

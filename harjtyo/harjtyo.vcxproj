@@ -167,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\background.png" />
+    <Image Include="Textures\crosshair.png" />
     <Image Include="Textures\enemy.png" />
     <Image Include="Textures\mech.png" />
   </ItemGroup>
