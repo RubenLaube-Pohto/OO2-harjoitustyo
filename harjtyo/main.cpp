@@ -1,5 +1,6 @@
 #include <vector>
-#include <SFML/Graphics.hpp>
+#include <SFML\Graphics.hpp>
+#include <SFML\Audio.hpp>
 #include "playerCharacter.h"
 #include "enemy.h"
 #include "math.h"
@@ -13,6 +14,11 @@ sf::CircleShape crosshair;
 std::vector<Enemy*> enemies;
 std::vector<Bullet> bullets;
 std::vector<Bullet> enemyBullets;
+
+sf::Sound gameoverSound;
+sf::Sound playerDeathSound;
+sf::Sound playerShootSound;
+sf::Sound enemyShootSound;
 
 int fps = 0;
 sf::Text framerateText;
@@ -74,6 +80,30 @@ int main() {
 	xSpeed = 0.0f;
 	ySpeed = 0.0f;
 
+	// Load music
+	sf::Music musicPlayer;
+	musicPlayer.openFromFile(BG_MUSIC);
+	musicPlayer.setLoop(true);
+	musicPlayer.play();
+
+	// Load sound effects
+	sf::SoundBuffer sbGameoverSound;
+	sf::SoundBuffer sbPlayerDeathSound;
+	sf::SoundBuffer sbPlayerShootSound;
+	sf::SoundBuffer sbEnenmyShootSound;
+
+	sbGameoverSound.loadFromFile(GAMEOVER_AUDIO);
+	sbPlayerDeathSound.loadFromFile(PLAYER_DEATH_AUDIO);
+	sbPlayerShootSound.loadFromFile(PLAYER_SHOOT_AUDIO);
+	sbEnenmyShootSound.loadFromFile(ENEMY_SHOOT_AUDIO);
+
+	gameoverSound = sf::Sound(sbGameoverSound);
+	playerDeathSound = sf::Sound(sbPlayerDeathSound);
+	playerShootSound = sf::Sound(sbPlayerShootSound);
+	enemyShootSound = sf::Sound(sbEnenmyShootSound);
+	
+	
+
 	// Game loop
 	while (window.isOpen()) {
 		sf::Event event;
@@ -133,6 +163,7 @@ int main() {
 				sf::Vector2f bv = crosshair.getPosition() - player->getPosition();
 				bullets.push_back(Bullet(Math::vector2fUnit(bv), player->getPosition(), WIDTH * 0.5f));
 				player->setReadyToFire(false);
+				playerShootSound.play();
 			}
 		}
 
@@ -286,6 +317,7 @@ void update(sf::RenderWindow& window) {
 					sf::Vector2f bv = player->getPosition() - enemy->getPosition();
 					enemyBullets.push_back(Bullet(Math::vector2fUnit(bv), enemy->getPosition(), WIDTH * 0.5f));
 					enemy->setReadyToFire(false);
+					enemyShootSound.play();
 				}
 			}
 			else {
@@ -336,7 +368,8 @@ void update(sf::RenderWindow& window) {
 		if (player->checkHit(enemyBullets.at(i).getPosition())) {
 			if (!player->isAlive()) {
 				// TODO: Add endscreen and save highscore
-				window.close();
+				playerDeathSound.play();
+				gameoverSound.play();
 			}
 			enemyBullets.erase(enemyBullets.begin() + i);
 		}

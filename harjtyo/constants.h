@@ -11,6 +11,8 @@ const std::string ENEMY_TEXTURE_FILE = "Textures\\enemy.png";
 const std::string GAMEOVER_AUDIO = "Audio\\gameover.wav";
 const std::string PLAYER_DEATH_AUDIO = "Audio\\pain.wav";
 const std::string BG_MUSIC = "Audio\\bass-or-die-loop.wav";
+const std::string PLAYER_SHOOT_AUDIO = "Audio\\flaunch.wav";
+const std::string ENEMY_SHOOT_AUDIO = "Audio\\slimeball.wav";
 
 const float MOVE_SPEED = 5.0f;
 const int WIDTH = 800;

@@ -175,8 +175,10 @@
   </ItemGroup>
   <ItemGroup>
     <Media Include="Audio\bass-or-die-loop.wav" />
+    <Media Include="Audio\flaunch.wav" />
     <Media Include="Audio\gameover.wav" />
     <Media Include="Audio\pain.wav" />
+    <Media Include="Audio\slimeball.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

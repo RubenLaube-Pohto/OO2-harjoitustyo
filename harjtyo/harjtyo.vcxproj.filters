@@ -83,5 +83,11 @@
     <Media Include="Audio\pain.wav">
       <Filter>Resource Files\Audio</Filter>
     </Media>
+    <Media Include="Audio\flaunch.wav">
+      <Filter>Resource Files\Audio</Filter>
+    </Media>
+    <Media Include="Audio\slimeball.wav">
+      <Filter>Resource Files\Audio</Filter>
+    </Media>
   </ItemGroup>
 </Project>
