@@ -1,13 +1,14 @@
 #include "bullet.h"
 #include "math.h"
+#include "constants.h"
 
 Bullet::Bullet() : CircleShape () {
 
 }
 
 Bullet::Bullet(const sf::Vector2f& direction, const sf::Vector2f& origin, float distance) : CircleShape() {
-	float radius = 3.0f;
-	this->speed = 20.0f;
+	float radius = BULLET_RADIUS;
+	this->speed = BULLET_DEF_SPEED;
 	this->setRadius(radius);
 	this->setOrigin(radius, radius);
 	this->setPosition(origin);
@@ -28,4 +29,8 @@ void Bullet::travel() {
 
 bool Bullet::isAlive() {
 	return alive;
+}
+
+void Bullet::setSpeed(float speed) {
+	this->speed = speed;
 }

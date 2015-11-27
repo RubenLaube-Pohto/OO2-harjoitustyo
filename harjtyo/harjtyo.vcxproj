@@ -154,6 +154,8 @@
   <ItemGroup>
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="explosion.cpp" />
+    <ClCompile Include="healthmeter.cpp" />
     <ClCompile Include="highscoresmanager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math.cpp" />
@@ -163,6 +165,8 @@
     <ClInclude Include="bullet.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="explosion.h" />
+    <ClInclude Include="healthmeter.h" />
     <ClInclude Include="highscoresmanager.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="playerCharacter.h" />
@@ -171,6 +175,7 @@
     <Image Include="Textures\background.png" />
     <Image Include="Textures\crosshair.png" />
     <Image Include="Textures\enemy.png" />
+    <Image Include="Textures\explosion.png" />
     <Image Include="Textures\mech.png" />
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +183,7 @@
   </ItemGroup>
   <ItemGroup>
     <Media Include="Audio\bass-or-die-loop.wav" />
+    <Media Include="Audio\explosion.wav" />
     <Media Include="Audio\flaunch.wav" />
     <Media Include="Audio\gameover.wav" />
     <Media Include="Audio\pain.wav" />

@@ -10,6 +10,7 @@ public:
 	Bullet(const sf::Vector2f&, const sf::Vector2f&, float);
 	void travel();
 	bool isAlive();
+	void setSpeed(float);
 private:
 	sf::Vector2f direction;
 	float speed;

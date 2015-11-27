@@ -5,7 +5,7 @@ HighscoresManager::HighscoresManager(string file) {
 	this->filepath = file;
 	loadFromFile();
 	this->setString(getScoresString());
-	this->setOrigin(100, 100);
+	this->setOrigin(100, 150);
 }
 void HighscoresManager::loadFromFile() {
 	int score;
@@ -23,6 +23,13 @@ void HighscoresManager::loadFromFile() {
 		}
 
 		file.close();
+	}
+	// Could not open file
+	else {
+		for (int i = 0; i < MAX_SIZE; ++i) {
+			highscores.insert(make_pair(0, "Player"));
+			writeAllToFile();
+		}
 	}
 }
 void HighscoresManager::newScore(string name, int score) {
@@ -66,5 +73,10 @@ string HighscoresManager::getScoresString() {
 	for (multimap<int, string>::const_iterator itr = highscores.begin(); itr != highscores.end(); ++itr) {
 		s += itr->second + ": " + std::to_string(itr->first) + "\n";
 	}
+	s += "\nPress R to restart!";
 	return s;
+}
+int HighscoresManager::getWorstScore() {
+	multimap<int, string>::const_iterator itr = highscores.begin();
+	return itr->first;
 }

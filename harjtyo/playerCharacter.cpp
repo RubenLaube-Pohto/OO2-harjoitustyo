@@ -10,6 +10,7 @@ PlayerCharacter::PlayerCharacter(const sf::Texture& texture) : Sprite() {
 	this->alive = true;
 	this->hitbox = this->getGlobalBounds();
 	this->healthPoints = PLAYER_HEALTH;
+	this->cooldown = PLAYER_COOLDOWN;
 }
 
 void PlayerCharacter::setDirection(int d) {
@@ -61,4 +62,8 @@ void PlayerCharacter::setHitbox(sf::FloatRect hitbox) {
 
 bool PlayerCharacter::isAlive() {
 	return alive;
+}
+
+int PlayerCharacter::getHealthPoints() {
+	return healthPoints;
 }

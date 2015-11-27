@@ -21,10 +21,11 @@ public:
 	bool checkHit(const sf::Vector2f&);
 	bool isAlive();
 	void setHitbox(sf::FloatRect);
+	int getHealthPoints();
 private:
 	sf::Vector2f size;
 	sf::Clock cooldownTimer;
-	float cooldown = 0.15f;
+	float cooldown;
 	bool readyToFire = false;
 	int direction = 0;
 	int frameNumber = 0;

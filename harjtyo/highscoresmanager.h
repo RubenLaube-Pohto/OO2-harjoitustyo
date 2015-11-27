@@ -11,6 +11,7 @@ class HighscoresManager : public sf::Text {
 public:
 	HighscoresManager(string);
 	void newScore(string, int);
+	int getWorstScore();
 private:
 	multimap<int, string> highscores;
 	const unsigned int MAX_SIZE = 5;

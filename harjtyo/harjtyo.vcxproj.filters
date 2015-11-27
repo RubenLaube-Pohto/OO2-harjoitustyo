@@ -42,6 +42,12 @@
     <ClCompile Include="highscoresmanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="healthmeter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="explosion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h">
@@ -62,6 +68,12 @@
     <ClInclude Include="highscoresmanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="healthmeter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="explosion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\background.png">
@@ -74,6 +86,9 @@
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="Textures\crosshair.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\explosion.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>
@@ -96,6 +111,9 @@
       <Filter>Resource Files\Audio</Filter>
     </Media>
     <Media Include="Audio\slimeball.wav">
+      <Filter>Resource Files\Audio</Filter>
+    </Media>
+    <Media Include="Audio\explosion.wav">
       <Filter>Resource Files\Audio</Filter>
     </Media>
   </ItemGroup>
