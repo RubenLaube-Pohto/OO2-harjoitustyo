@@ -1,17 +1,16 @@
 #ifndef HIGHSCORESMANAGERH
 #define HIGHSCORESMANAGERH
 
+#include <SFML\Graphics\Text.hpp>
 #include <string>
 #include <map>
 
 using namespace std;
 
-class HighscoresManager {
+class HighscoresManager : public sf::Text {
 public:
-	HighscoresManager();
 	HighscoresManager(string);
 	void newScore(string, int);
-	void displayScoresInConsole();
 private:
 	multimap<int, string> highscores;
 	const unsigned int MAX_SIZE = 5;
@@ -19,6 +18,7 @@ private:
 
 	void loadFromFile();
 	void writeAllToFile();
+	string getScoresString();
 };
 
 #endif

@@ -25,6 +25,7 @@ const float GROUND_WIDTH = 256.0f * 4;
 const float GROUND_HEIGTH = 256.0f * 4;
 const float ENEMY_SHOOTING_DISTANCE = 300.0f;
 const float CAMERA_MAX_OFFSET = 50.0f;
+const int PLAYER_HEALTH = 1;
 
 const bool DEBUG = true;
 

@@ -115,7 +115,7 @@ int main() {
 
 	// Load highscores manager
 	highscores = new HighscoresManager(HIGHSCORES_FILE);
-	highscores->displayScoresInConsole();
+	highscores->setFont(fontArial);
 
 	// Game loop
 	while (window.isOpen()) {
@@ -127,6 +127,31 @@ int main() {
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
 					window.close();
 				}
+				if (gameover && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R)) {
+					gameover = false;
+
+					delete player;
+					player = new PlayerCharacter(playerTexture);
+					player->setPosition(GROUND_WIDTH / 2, GROUND_HEIGTH / 2);
+					view.setCenter(player->getPosition());
+
+					while (enemies.size()) {
+						delete enemies.back();
+						enemies.back() = NULL;
+						enemies.pop_back();
+
+					}
+					for (int i = 0; i < 10; ++i) {
+						Enemy* enemy = new Enemy(enemyTexture);
+						int randX = rand() % (int)GROUND_WIDTH + 1;
+						int randY = rand() % (int)GROUND_HEIGTH + 1;
+						enemy->setPosition((float)randX, (float)randY);
+						enemies.push_back(enemy);
+					}
+
+					bullets.clear();
+					enemyBullets.clear();
+				}
 			}
 		}
 
@@ -134,6 +159,13 @@ int main() {
 			handleInput();
 			update(window);
 			draw(window);
+			window.display();
+		}
+		else {
+			highscores->setPosition(view.getCenter());
+			draw(window);
+			window.draw(*highscores);
+			window.display();
 		}
 	}
 
@@ -306,7 +338,6 @@ void update(sf::RenderWindow& window) {
 	for (int i = enemyBullets.size() - 1; i >= 0; --i) {
 		if (player->checkHit(enemyBullets.at(i).getPosition())) {
 			if (!player->isAlive()) {
-				// TODO: Add endscreen and save highscore
 				playerDeathSound.play();
 				gameoverSound.play();
 				gameover = true;
@@ -400,5 +431,4 @@ void draw(sf::RenderWindow& window) {
 	if (DEBUG) {
 		window.draw(framerateText);
 	}
-	window.display();
 }

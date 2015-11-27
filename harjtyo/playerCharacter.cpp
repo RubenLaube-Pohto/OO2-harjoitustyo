@@ -1,4 +1,5 @@
 #include "playerCharacter.h"
+#include "constants.h"
 
 PlayerCharacter::PlayerCharacter(const sf::Texture& texture) : Sprite() {
 	this->size = sf::Vector2f(64.0f, 64.0f);
@@ -8,6 +9,7 @@ PlayerCharacter::PlayerCharacter(const sf::Texture& texture) : Sprite() {
 	this->cooldownTimer.restart();
 	this->alive = true;
 	this->hitbox = this->getGlobalBounds();
+	this->healthPoints = PLAYER_HEALTH;
 }
 
 void PlayerCharacter::setDirection(int d) {

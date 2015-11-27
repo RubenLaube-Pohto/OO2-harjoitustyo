@@ -1,13 +1,11 @@
 #include "highscoresmanager.h"
 #include <fstream>
-#include <iostream>
 
-HighscoresManager::HighscoresManager() {
-	this->filepath = "";
-}
 HighscoresManager::HighscoresManager(string file) {
 	this->filepath = file;
 	loadFromFile();
+	this->setString(getScoresString());
+	this->setOrigin(100, 100);
 }
 void HighscoresManager::loadFromFile() {
 	int score;
@@ -32,6 +30,7 @@ void HighscoresManager::newScore(string name, int score) {
 	if (highscores.size() < MAX_SIZE) {
 		highscores.insert(make_pair(score, name));
 		writeAllToFile();
+		this->setString(getScoresString());
 	}
 	// Check if the new score is better
 	else {
@@ -39,6 +38,8 @@ void HighscoresManager::newScore(string name, int score) {
 		if (itr->first < score) {
 			highscores.erase(itr);
 			highscores.insert(make_pair(score, name));
+			writeAllToFile();
+			this->setString(getScoresString());
 		}
 	}
 }
@@ -60,8 +61,10 @@ void HighscoresManager::writeAllToFile() {
 		file.close();
 	}
 }
-void HighscoresManager::displayScoresInConsole() {
+string HighscoresManager::getScoresString() {
+	string s = "HIGHSCORES\nName: Kills\n";
 	for (multimap<int, string>::const_iterator itr = highscores.begin(); itr != highscores.end(); ++itr) {
-		cout << itr->second << ": " << itr->first << endl;
+		s += itr->second + ": " + std::to_string(itr->first) + "\n";
 	}
+	return s;
 }

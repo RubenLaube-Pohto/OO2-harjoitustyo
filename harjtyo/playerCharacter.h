@@ -28,7 +28,7 @@ private:
 	bool readyToFire = false;
 	int direction = 0;
 	int frameNumber = 0;
-	int healthPoints = 50;
+	int healthPoints;
 	bool alive;
 	sf::FloatRect hitbox;
 };
