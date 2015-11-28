@@ -29,6 +29,7 @@ sf::Sound enemyDeathSound;
 sf::Sound playerShootSound;
 sf::Sound enemyShootSound;
 
+sf::Texture enemyTexture;
 sf::Texture explosionTexture;
 
 HighscoresManager* highscores = NULL;
@@ -42,6 +43,7 @@ void draw(sf::RenderWindow&);
 void handleInput();
 void cleanUp();
 void initializeEnemies(sf::Texture&);
+void createNewEnemy(const sf::Texture&);
 
 int main() {
 	srand((unsigned int)time(NULL));
@@ -66,12 +68,10 @@ int main() {
 	sf::Texture playerTexture;
 	playerTexture.loadFromFile(PLAYER_TEXTURE_FILE);
 
-	sf::Texture enemyTexture;
-	enemyTexture.loadFromFile(ENEMY_TEXTURE_FILE);
-
 	sf::Texture crosshairTexture;
 	crosshairTexture.loadFromFile(CROSSHAIR_TEXTURE_FILE);
 
+	enemyTexture.loadFromFile(ENEMY_TEXTURE_FILE);
 	explosionTexture.loadFromFile(EXPLOSION_TEXTURE_FILE);
 
 	// Load background
@@ -82,6 +82,7 @@ int main() {
 	// Load player
 	player = new PlayerCharacter(playerTexture);
 	player->setPosition(GROUND_WIDTH / 2, GROUND_HEIGTH / 2);
+	player->setHitbox(player->getGlobalBounds());
 
 	// Initialize camera and moving speeds
 	view = sf::View(player->getPosition(), sf::Vector2f((float)WIDTH, (float)HEIGTH));
@@ -329,11 +330,7 @@ void update(sf::RenderWindow& window) {
 			exp.setPosition(enemy->getPosition());
 			explosions.push_back(exp);
 
-			enemy = new Enemy(*(enemies.at(i)->getTexture()));
-			int randX = rand() % (int)GROUND_WIDTH + 1;
-			int randY = rand() % (int)GROUND_HEIGTH + 1;
-			enemy->setPosition((float)randX, (float)randY);
-			enemies.push_back(enemy);
+			createNewEnemy(enemyTexture);
 
 			delete enemies.at(i);
 			enemies.at(i) = NULL;
@@ -492,9 +489,14 @@ void draw(sf::RenderWindow& window) {
 }
 
 void initializeEnemies(sf::Texture& texture) {
-	sf::FloatRect screen = view.getViewport();
-	unsigned int i = 0;
+	float screenX = view.getCenter().x - 0.5f * WIDTH;
+	float screenY = view.getCenter().y - 0.5f * HEIGTH;
+	float screenWidth = view.getSize().x;
+	float screenHeight = view.getSize().y;
 
+	sf::FloatRect screen(screenX, screenY, screenWidth, screenHeight);
+
+	unsigned int i = 0;
 	while (i < ENEMIES_ON_FIELD) {
 		int randX = rand() % (int)GROUND_WIDTH + 1;
 		int randY = rand() % (int)GROUND_HEIGTH + 1;
@@ -505,8 +507,35 @@ void initializeEnemies(sf::Texture& texture) {
 		else {
 			Enemy* enemy = new Enemy(texture);
 			enemy->setPosition(pos);
+			enemy->setHitbox(enemy->getGlobalBounds());
 			enemies.push_back(enemy);
 			++i;
+		}
+	}
+}
+
+void createNewEnemy(const sf::Texture& texture) {
+	float screenX = view.getCenter().x - 0.5f * WIDTH;
+	float screenY = view.getCenter().y - 0.5f * HEIGTH;
+	float screenWidth = view.getSize().x;
+	float screenHeight = view.getSize().y;
+
+	sf::FloatRect screen(screenX, screenY, screenWidth, screenHeight);
+
+	bool done = false;
+	while (!done) {
+		int randX = rand() % (int)GROUND_WIDTH + 1;
+		int randY = rand() % (int)GROUND_HEIGTH + 1;
+		sf::Vector2f pos((float)randX, (float)randY);
+		if (screen.contains(pos)) {
+			continue;
+		}
+		else {
+			Enemy* enemy = new Enemy(texture);
+			enemy->setPosition(pos);
+			enemy->setHitbox(enemy->getGlobalBounds());
+			enemies.push_back(enemy);
+			done = true;
 		}
 	}
 }

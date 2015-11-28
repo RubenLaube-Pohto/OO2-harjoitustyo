@@ -26,7 +26,7 @@ void HighscoresManager::loadFromFile() {
 	}
 	// Could not open file
 	else {
-		for (int i = 0; i < MAX_SIZE; ++i) {
+		for (unsigned int i = 0; i < MAX_SIZE; ++i) {
 			highscores.insert(make_pair(0, "Player"));
 			writeAllToFile();
 		}

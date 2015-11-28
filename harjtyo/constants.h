@@ -34,8 +34,8 @@ const int PLAYER_HEALTH = 30;
 const float BULLET_RADIUS = 3.0f;
 const float PLAYER_COOLDOWN = 0.05f;
 const float BULLET_DEF_SPEED = 20.0f;
-const float ENEMY_BULLET_SPEED = 10.0f;
-const unsigned int ENEMIES_ON_FIELD = 10;
+const float ENEMY_BULLET_SPEED = 7.0f;
+const unsigned int ENEMIES_ON_FIELD = 20;
 
 const bool DEBUG = true;
 
