@@ -1,6 +1,7 @@
 #include <vector>
 #include <SFML\Graphics.hpp>
 #include <SFML\Audio.hpp>
+#include <iostream>
 #include "playerCharacter.h"
 #include "enemy.h"
 #include "math.h"
@@ -62,17 +63,49 @@ int main() {
 
 	// Load textures
 	sf::Texture backgroundTexture;
-	backgroundTexture.loadFromFile(BG_TEXTURE_FILE);
-	backgroundTexture.setRepeated(true);
-
 	sf::Texture playerTexture;
-	playerTexture.loadFromFile(PLAYER_TEXTURE_FILE);
-
 	sf::Texture crosshairTexture;
-	crosshairTexture.loadFromFile(CROSSHAIR_TEXTURE_FILE);
 
-	enemyTexture.loadFromFile(ENEMY_TEXTURE_FILE);
-	explosionTexture.loadFromFile(EXPLOSION_TEXTURE_FILE);
+	try {
+		if (!backgroundTexture.loadFromFile(BG_TEXTURE_FILE))
+			throw string(BG_TEXTURE_FILE);
+		backgroundTexture.setRepeated(true);
+	}
+	catch (string e) {
+		std::cout << "Failed to load " << e << std::endl;
+	}
+	
+	try {
+		if (!playerTexture.loadFromFile(PLAYER_TEXTURE_FILE))
+			throw string(PLAYER_TEXTURE_FILE);
+	}
+	catch (string e) {
+		std::cout << "Failed to load " << e << std::endl;
+	}
+
+	try {
+		if (!crosshairTexture.loadFromFile(CROSSHAIR_TEXTURE_FILE))
+			throw string(CROSSHAIR_TEXTURE_FILE);
+	}
+	catch (string e) {
+		std::cout << "Failed to load " << e << std::endl;
+	}
+
+	try {
+		if (!enemyTexture.loadFromFile(ENEMY_TEXTURE_FILE))
+			throw string(ENEMY_TEXTURE_FILE);
+	}
+	catch (string e) {
+		std::cout << "Failed to load " << e << std::endl;
+	}
+
+	try {
+		if (!explosionTexture.loadFromFile(EXPLOSION_TEXTURE_FILE))
+			throw string(EXPLOSION_TEXTURE_FILE);
+	}
+	catch (string e) {
+		std::cout << "Failed to load " << e << std::endl;
+	}
 
 	// Load background
 	background.setTexture(&backgroundTexture);
